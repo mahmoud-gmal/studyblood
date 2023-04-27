@@ -1,0 +1,27 @@
+.footer {
+  /* padding: 80px 0 0; */
+}
+.footer .logo_footer{text-align: center;}
+
+.footer .contact_info li {
+  margin-bottom: 18px;
+}
+
+.footer ul {display: flex;
+  justify-content: center;}
+
+  .footer ul li{
+    margin-inline-end: 16px;
+  }
+  .footer ul li a{
+    font: normal normal 300 16px/26px Calibri_Regular;
+    color: #FFFFFF;
+    transition: all .3s linear;
+  }
+
+  .footer ul li a.active, .footer ul li a:hover{color: #FDE1CA;}
+
+  .footer_tp{background: #787878 0% 0% no-repeat padding-box; padding: 45px 0;}
+
+  .copyrights{background: #585858 0% 0% no-repeat padding-box; padding: 12px 0;}
+  .copyrights p{text-align: center;font: normal normal 300 16px/26px Calibri_Regular;color: #FFFFFF;}

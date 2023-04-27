@@ -1,0 +1,68 @@
+
+.main_content{
+    background: #F8FBFF 0% 0% no-repeat padding-box;
+    padding: 50px 0px 70px 0px;
+    position: relative;
+    overflow: hidden;
+}
+
+.main_content::before{
+    content: "";
+    position: absolute;
+    left: -154px;
+    bottom: 0;
+    width: 100%;
+    height: 284px;
+    background-image: url(/assets/Group711.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+
+.heading {
+    text-align: center;
+    font: normal normal bold 42px/67px "bahij_Helvetica_bold";
+    color: #2E386B;
+    margin-bottom: 50px;
+}
+
+.sub_heading {
+    font: normal normal bold 24px/40px "bahij_Helvetica_bold";
+    color: #2E386B;
+    margin-bottom: 20px;
+}
+
+.privacy_section {
+    background: transparent linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%) 0% 0% no-repeat padding-box;
+    box-shadow: 0px 8px 24px #3038680A;
+    border-radius: 10px;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 41px 50px;
+}
+
+.list_dots li {
+    font: normal normal normal 16px/normal "bahij_Helvetica_roman";
+    color: #2E386B;
+    margin-bottom: 12px;
+    position: relative;
+    padding-right: 20px;
+}
+
+.list_dots li::before{
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    right:0;
+    top: 50%;
+    background: #FFD983 0% 0% no-repeat padding-box;
+    transform: translateY(-50%);
+    border-radius: 50%;
+}
+
+.dashed_line {
+    border-bottom: 1px solid #E1E1E1;
+    display: block;
+    margin: 27px 0;
+}

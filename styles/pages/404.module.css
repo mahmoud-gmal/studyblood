@@ -1,0 +1,27 @@
+.error_page{
+    background: #F8FBFF 0% 0% no-repeat padding-box;
+    padding: 110px 0;
+}
+
+.error_page h2{
+    font: normal normal bold 42px/67px "bahij_Helvetica_bold";
+    color: #515151;
+    margin-bottom: 25px;
+}
+
+
+.error_page p{
+    font: normal normal normal 22px/37px "bahij_Helvetica_roman";
+    color: #707070;
+    margin-bottom: 42px;
+}
+
+@media (max-width: 767.9px) {
+    .text_wrapper{margin-bottom: 50px;}
+  
+}
+
+/* .error_page
+.error_page */
+
+

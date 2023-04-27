@@ -1,0 +1,290 @@
+
+
+.programs{
+  padding: 50px 0;
+  background: #F8FBFF 0% 0% no-repeat padding-box;
+  overflow: hidden;
+}
+.programs .tab_content > h2{
+  font: normal normal bold 36px/67px "bahij_Helvetica_bold";
+  color: #2E386B;
+}
+.programs .breadcrumb{
+  display: flex;
+}
+.programs .breadcrumb li, .programs .breadcrumb li a{
+  font: normal normal normal 14px/67px "bahij_Helvetica_roman";
+  color: #707070;
+  opacity: .65;
+}
+.programs .tab_content .breadcrumb li::before{content: none;}
+.programs .breadcrumb li:last-child{opacity: 1;}
+/* color: #707070; */
+.programs .breadcrumb span{
+  margin: 0 10px;
+  font: normal normal normal 14px/67px "bahij_Helvetica_roman";
+  color: #707070;
+}
+
+.programs .programs_details{
+  background: transparent linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%) 0% 0% no-repeat padding-box;
+  box-shadow: 0px 8px 24px #3038680a;
+  border-radius: 10px;
+  padding: 40px 32px;
+  position: relative;
+}
+.programs .programs_details h2{
+  font: normal normal bold 24px/40px "bahij_Helvetica_bold";
+  color: #2E386B;
+  margin-bottom: 25px;
+  position: relative;
+  padding-right: 50px;
+}
+.programs .programs_details h2::before{
+  content: "";
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  right: 0;
+  top: 50%;
+  background-image: url(/assets/online-learning.png);
+  background-repeat: no-repeat;
+  transform: translateY(-50%);
+  background-size: contain;
+}
+.programs .programs_details ul li{
+  font: normal normal normal 16px/normal "bahij_Helvetica_roman";
+  color: #2E386B;
+  margin-bottom: 15px;
+  position: relative;
+  padding-right: 35px;
+}
+.programs .tab_content ul li::before{
+  content: "";
+  position: absolute;
+  width: 30px;
+  height: 25px;
+  right: -2px;
+  top: 50%;
+  background-image: url(/assets/icons8-done-30.png);
+  background-repeat: no-repeat;
+  transform: translateY(-50%);
+  background-size: contain;
+}
+
+.programs .programs_details .programs_details_list{
+margin-bottom: 40px;
+}
+.programs .programs_details .programs_details_list_2 li{
+  padding-right: 31px;
+}
+.programs .tab_content .programs_details_list_2 li::before{
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  right: 10px;
+  top: 50%;
+  background: #FFD983 0% 0% no-repeat padding-box;
+  transform: translateY(-50%);
+  border-radius: 50%;
+}
+.programs .programs_details_list_2{
+  margin-bottom: 27px;
+}
+
+
+.programs .nav_pill{
+  background: transparent linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%) 0% 0% no-repeat padding-box;
+  box-shadow: 0px 8px 24px #3038680a;
+  border-radius: 10px;
+  padding-top: 30px;
+  margin-top: 133px;
+  position: relative;
+}
+
+.programs .nav_pill h2{
+  font: normal normal bold 24px/40px "bahij_Helvetica_roman";
+  color: #2E386B;
+  margin-bottom: 25px;
+  position: relative;
+  padding-right: 30px;
+}
+
+
+.programs .nav_pill ul li:first-child{border-top: 1px solid #F0F0F0;}
+.programs .nav_pill ul li{
+  font: normal normal normal 16px/67px "bahij_Helvetica_roman";
+  border-bottom: 1px solid #F0F0F0;
+  color: #2E386B;
+  padding-right: 70px;
+  cursor: pointer;
+  counter-increment: my-awesome-counter;
+  position: relative;
+}
+.programs .nav_pill ul li::before{
+  content: counter(my-awesome-counter);
+  position: absolute;
+  --size: 29px;
+  right: var(--size);
+  width: var(--size);
+  height: var(--size);
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  text-align: center;
+  font: normal normal normal 16px/var(--size) "bahij_Helvetica_roman";
+  color: #FFF;
+  background: #80AEFF 0% 0% no-repeat padding-box;
+  opacity: 0.53;
+}
+.programs .nav_pill .active{
+  background: #80AEFF 0% 0% no-repeat padding-box;
+  color: #FFF;
+}
+
+.programs .nav_pill .active::before{
+  color: #303868;
+  background: #FFF;
+  opacity: 1;
+}
+
+
+
+.programs .programs_details::before, .programs .nav_pill::before{
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  /* background-repeat: no-repeat;
+  background-size: contain; */
+}
+.programs .programs_details::before{
+  right: -120px;
+  bottom: -5px;
+  width: 72px;
+  height: 108px;
+  background-image: url(/assets/2shape.svg);
+  opacity: 0.35;
+}
+.programs .nav_pill::before{
+  left: -60%;
+  bottom: 14px;
+  width: 169px;
+  height: 141px;
+  background-image: url(/assets/banner_shape.svg);
+  opacity: 0.35;
+}
+
+
+@media (max-width: 767.9px) {
+  .programs .row_tabs{
+    flex-direction: column-reverse;
+  }
+  .programs .nav_pill{margin-top: 0;margin-bottom: 50px;}
+}
+
+
+/* =====================  Common Questions  ======================== */
+
+.common_ques {
+    background: #f8fbff 0% 0% no-repeat padding-box;
+    padding: 80px 0 50px
+  }
+  .common_ques .heading {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+  .common_ques .heading h2{
+    font: normal normal bold 42px/67px 'bahij_Helvetica_bold';
+    color: var(--main-color);;
+  }
+  .common_ques .ques {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .common_ques .ques .que {
+    margin-bottom: 20px;
+    background: #ffffff 0% 0% no-repeat padding-box;
+    box-shadow: 0px 3px 0px #d3d5e2;
+    border: 1px solid #d3d5e2;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 700px;
+  }
+  
+  .common_ques .ques .que h2 {
+    font: normal normal bold 16px/27px "bahij_Helvetica_bold";
+    color: var(--main-color);;
+  }
+  .common_ques .ques .que p {
+    font: normal normal normal 16px/30px "bahij_Helvetica_roman";
+    color: #2E386BBF;
+    margin-top: 14px;
+  }
+  
+  .common_ques .start {
+    text-align: center;
+    margin-top: 50px;
+  }
+  .common_ques .start h3 {
+    font: normal normal normal 36px/58px "bahij_Helvetica_roman";
+    color: var(--main-color);;
+  }
+  
+  .more_btn_link{
+    font: normal normal bold 16px/27px "bahij_Helvetica_bold";
+    color: #80AEFF;
+  }
+  .common_ques .start a {
+    font: normal normal bold 16px/27px "bahij_Helvetica_bold";
+    padding: 16px 58px;
+    margin-top: 14px;
+    display: inline-block;
+  }
+  
+  /* mobile */
+  @media (max-width: 575.9px) {
+  
+  }
+
+
+
+  
+  /* =====================  Features of our programs ======================== */
+
+  .features{
+    background: #F8FBFF 0% 0% no-repeat padding-box;
+    padding: 90px 0 50px;
+  }
+  .features h2{
+    font: normal normal bold 42px/67px "bahij_Helvetica_bold";
+    color: #2E386B;
+    text-align: center;
+    margin-bottom: 110px;
+  }
+  .features .item{
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    box-shadow: 0px 8px 21px #3038680F;
+    border-radius: 12px;
+    padding:30px ;
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    margin-bottom: 35px;
+    max-width: 337px;;
+  }
+  .features .item h3{
+    font: normal normal bold 18px/67px "bahij_Helvetica_bold";
+    color: #2E386B;
+    padding-right: 22px;
+  }
+  /* .features .item {} */
+
+  @media (max-width: 767.9px) {
+    .features .item{
+    margin-right: auto;
+      margin-left: auto;
+  }
+    }
