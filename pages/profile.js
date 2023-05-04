@@ -12,38 +12,26 @@ import Accordion from "../src/components/Accordion";
 
 // styles
 import styles from "./../styles/pages/profile.module.css";
-
+import form from "./../styles/pages/form.module.css";
 // bootstrap
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Badge, Button, Col, Container, Form, Row, Table } from "react-bootstrap";
 
+// animation
+import { motion } from 'framer-motion';
 
 // fontawesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faTable, faBookBookmark, faBook, faCommentAlt, faPaperPlane} from "@fortawesome/free-solid-svg-icons";
-// import { faArrowleft } from "@fortawesome/free-regular-svg-icons";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+const eye = <FontAwesomeIcon icon={faEye} />;
+const eye_slash = <FontAwesomeIcon icon={faEyeSlash} />
+
+//=== react-tabs ===//
+import Tabs from "react-tabs/lib/components/Tabs";
+import TabList from "react-tabs/lib/components/TabList";
+import Tab from "react-tabs/lib/components/Tab";
+import TabPanel from "react-tabs/lib/components/TabPanel";
 
 
-// tabs
-import { Tabs, useTabState, usePanelState } from "@bumaga/tabs";
-import Fancybox from "../src/components/Fancybox.js";
-
-// custom nav tabs
-const Tab = ({ children }) => {
-  const { onClick, isActive } = useTabState();
-  return (
-    <li onClick={onClick} className={`${isActive ? styles.active : "inactive"} tab`}>
-      {children}
-    </li>
-  );
-};
-
-// custom tab content
-const Panel = ({ children }) => {
-  const isActive = usePanelState();
-  return isActive ? <>{children}</> : null;
-};
-
-// import "emoji-mart/css/emoji-mart.css";
 
 
 // https://codesandbox.io/s/flamboyant-lucy-sgs1ys?file=/src/App.tsx
@@ -53,33 +41,30 @@ const Panel = ({ children }) => {
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
+import { AnimatePresence } from "framer-motion";
+
+const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+
 
 const validationSchema = Yup.object().shape({
-  message: Yup.string()
-    .required("هذا الحقل مطلوب")
+  name: Yup.string()
+    .required("Name is required.")
+    .min(3, "must be at least 3 characters."),
+  email: Yup.string()
+    .required("Email is required.")
+    .email("Invalid email."),
+  phone: Yup.string()
+    .required("Phone number is required.")
+    .matches(phoneRegExp, 'Phone number is not valid'),
 
+
+  
 });
 
-// emoji-picker-react
-// import dynamic from 'next/dynamic';
 
-// const Picker = dynamic(
-//   () => {
-//     return import('emoji-picker-react');
-//   },
-//   { ssr: false }
-// );
-// import Picker from 'emoji-picker-react';
 
-// package 2
-import dynamic from 'next/dynamic';
 
-export const Picker = dynamic(
-  () => {
-    return import('emoji-picker-react');
-  },
-  { ssr: false }
-);
+
 
 
 
@@ -87,40 +72,14 @@ export const Picker = dynamic(
 // // import "emoji-mart/css/emoji-mart.css";
 
 
-export default function Profile({ data}) {
-// lang
-  const { locale, locales, asPath } = useRouter();
-
-// time in am/pm format 12h
-const formatAMPM = (date) => {
-  var hours = date.getHours();
-  var minutes = date.getMinutes();
-  var ampm = hours >= 12 ? 'pm' : 'am';
-  hours = hours % 12;
-  hours = hours ? hours : 12; // the hour '0' should be '12'
-  minutes = minutes < 10 ? '0'+minutes : minutes;
-  var strTime = hours + ':' + minutes + ' ' + ' <br/><span> ' + ampm + '</span>';
-  return strTime;
-}
-
-  // date
-  const date = new Date();
-  const month = date.toLocaleString('en-US', {month: 'short'});
-  const day = date.getDate()
+export default function Profile({ }) {
 
 
+  const [passwordShown, setPasswordShown] = useState(false);
+  const togglePasswordVisiblity = () => {
+    setPasswordShown(passwordShown ? false : true);
+  };
 
-// Chat form
-const [messageInput, setMessageInput] = useState("");
-// emojj btn
-const [emojiVisible, setEmojiVisible] = useState(false);
-const onEmojiClick = (event, emojiObject) => {
-    setMessageInput((messageInput) => messageInput + emojiObject.emoji);
-};
-
-// useEffect(() => {
-//   onEmojiClick;
-// }, [messageInput]);
 
 
 // validition
@@ -143,506 +102,309 @@ const onSubmit = (data) =>{
 
 
 {/* profile tabs */}
+<div className={`page_content ${form.main_content} ${styles.profile}`}>
 
-<div className={styles.profile}>
   <Container>
-  <Tabs>
-    <Row>
+  <Tabs selectedTabClassName="active">
+    <Row className={styles.row_tabs}>
 
-
-        {/*=============== Nav Bills =====================*/}
-      <Col lg={3} className="p-0">
-        <div className={styles.nav_content}>
-            <ul className={styles.back}>
-                <li><Link href="/"><a><FontAwesomeIcon icon={faArrowRight}  color={"#FFF"} width={20}/>  رجوع للرئيسية</a></Link></li>
-                </ul>
-                <div className={styles.avatar}>
-                <div className="avater_logo">
-                    <Image
-                        src="/assets/profile/student.png"
-                        alt="logo"
-                        width="92"
-                        height="92"
-                        objectFit="contain"
-                    />
-                </div>
-                    <h4 className={styles.avatar_text}>مرحبا أحمد !</h4>
-                </div>   
-
-                  <ul className={styles.profile_nav_list}>
-                    <Tab><div className={styles.icon_wrapper}><FontAwesomeIcon icon={faTable} color={"#4269EF"} width={14} height={14}/></div><h3 className={styles.text}>جدول الحصص</h3></Tab>
-                    <Tab><div className={styles.icon_wrapper}><FontAwesomeIcon icon={faBookBookmark}  color={"#4269EF"} width={14} height={14} /></div><h3 className={styles.text}>المناهج</h3></Tab>
-                    <Tab><div className={styles.icon_wrapper}><FontAwesomeIcon icon={faBook} color={"#4269EF"} width={14} height={14}/></div><h3 className={styles.text}>حل الواجب</h3></Tab>
-                    <Tab><div className={styles.icon_wrapper}><FontAwesomeIcon icon={faCommentAlt}  color={"#4269EF"} width={14} height={14}/></div><h3 className={styles.text}>شات مع الفصل</h3></Tab>
-                  </ul>
-
-       </div>
+    <Col md={4}>
+        <div className={styles.nav_pill}>
+            <TabList className="profile_nav_pills">
+                <Tab>PREVIOUS TIMED TESTS</Tab>
+                <Tab>Previous Questions TESTS</Tab>
+                <Tab>Previous Mock TESTS</Tab>
+                <Tab>Edit Account</Tab>
+                <Tab>edit password</Tab>
+            </TabList>
+               
+      </div>
       </Col>
 
+      <Col md={8}>
 
-    {/*=============== TAB CONTENT =====================*/}
-      <Col lg={9} className="p-0">
+      {/* PREVIOUS TIMED TESTS */}
+      <TabPanel>
+      <AnimatePresence exitBeforeEnter>
+      <motion.div 
+          className={styles.tab_content}
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -10, opacity: 0 }}
+          transition={{ duration: 0.2 }}
+      >
 
-    {/*========== class schedule  ==============*/}
-      <Panel>
-      <div className={`${styles.tab_content} ${styles.class_schedule}`}>
+         <h2> PREVIOUS TIMED TESTS </h2>
 
-        <Row>
-            <Col md={3}>
-                <h2 className={styles.table_title}>جدول الحصص</h2>
-            </Col>
-            <Col md={4}></Col>
-            <Col md={5}>
-            <div className={styles.full_date}>
-                <div className={styles.time}>
-                    <span dangerouslySetInnerHTML={{__html: formatAMPM(new Date)}}></span>
-                </div>
-                <div className={styles.date}>
-                  <span>{day}</span><span><br />{month}</span>
-                </div>
-            </div>
-            </Col>
-        </Row>
 
-        <div className={styles.days}>
-            <div className={styles.day}>
-                <div className={styles.day_head}> الأحد</div>
-                <div className={styles.day_body}>
-                    <h4>لغة عربية</h4>
-                    <div className={styles.time}> 
-                        <Image src="/assets/profile/stopwatch.png" alt=".." width="22" height="22" objectFit="contain"/>
-                        <span>3:00</span>
-                    </div>
-                </div>
-            </div>
-            <div className={styles.day}>
-                <div className={styles.day_head}> الأثنين</div>
-                <div className={styles.day_body}>
-                    <h4>لغة عربية</h4>
-                    <div className={styles.time}> 
-                        <Image src="/assets/profile/stopwatch.png" alt=".." width="22" height="22" objectFit="contain"/>
-                        <span>3:00</span>
-                    </div>
-                </div>
-            </div>
-            <div className={styles.day}>
-                <div className={styles.day_head}> الثلاثاء</div>
-                <div className={styles.day_body}>
-                    <h4>لغة عربية</h4>
-                    <div className={styles.time}> 
-                        <Image src="/assets/profile/stopwatch.png" alt=".." width="22" height="22" objectFit="contain"/>
-                        <span>3:00</span>
-                    </div>
-                </div>
-            </div>
-            <div className={styles.day}>
-                <div className={styles.day_head}> الأربعاء</div>
-                <div className={styles.day_body}>
-                    <h4>لغة عربية</h4>
-                    <div className={styles.time}> 
-                        <Image src="/assets/profile/stopwatch.png" alt=".." width="22" height="22" objectFit="contain"/>
-                        <span>3:00</span>
-                    </div>
-                </div>
-            </div>
-            <div className={styles.day}>
-                <div className={styles.day_head}> الخميس</div>
-                <div className={styles.day_body}>
-                    <h4>لغة عربية</h4>
-                    <div className={styles.time}> 
-                        <Image src="/assets/profile/stopwatch.png" alt=".." width="22" height="22" objectFit="contain"/>
-                        <span>3:00</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        </div>
-      </Panel>
+         <Table striped bordered hover responsive>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Number Of Question</th>
+          <th>Status</th>
+          <th>Review /Contiune</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Cardiliogy</td>
+          <td>20 Question</td>
+          <td>Completed</td>
+          <td><Link href="/"><a className="table_btn"><span> Review </span></a></Link> </td>
+        </tr>
+        <tr>
+          <td>Cardiliogy</td>
+          <td>20 Question</td>
+          <td>Exit Without Saving</td>
+          <td><Link href="/"><a className="table_btn continue"><span> Contiune </span></a></Link> </td>
+        </tr>
+        <tr>
+          <td>Cardiliogy</td>
+          <td>20 Question</td>
+          <td>Completed 20%</td>
+          <td><Link href="/"><a className="table_btn"><span> Review </span></a></Link> </td>
+        </tr>
 
-    {/*========== curricula ==============*/}
-      <Panel>
-      <div className={`${styles.tab_content} ${styles.curricula}`}>
 
-      <Row>
-            <Col md={3}>
-                <h2 className={styles.table_title}>جدول الحصص</h2>
-            </Col>
-            <Col md={4}></Col>
-            <Col md={5}>
-            <div className={styles.full_date}>
-                <div className={styles.time}>
-                    <span dangerouslySetInnerHTML={{__html: formatAMPM(new Date)}}></span>
-                </div>
-                <div className={styles.date}>
-                  <span>{day}</span><span><br />{month}</span>
-                </div>
-            </div>
-            </Col>
-        </Row>
 
-        <div className={styles.items}>
+      </tbody>
+    </Table>
 
-            <div className={styles.item}>
-               <div className={styles.image_wrapper}>
-                <Fancybox>
-                  <Link href="/assets/ccrt.png" data-fancybox="item">
-                    <a className="img" data-fancybox="item">
-                      <Image
-                        alt=""
-                        src="/assets/ccrt.png"
-                        width="239"
-                        height="149"
-                        objectFit="contain"
-                      />
-                      <i className="fa fa-play"></i>
-                    </a>
-                    </Link>
-                </Fancybox> 
-               </div>
-                <div className={styles.item_des}>
-                    <p>اسم الدرس يكتب هنا ليقوم الطالب بالإطلاع عليه فيما بعد</p>
-                    <div className={styles.day_wrapper}>
-                    <Image src="/assets/profile/stopwatch-1.png" alt=".." width="22" height="22" objectFit="contain"/>
-                    <span className="day">يوم :</span>
-                    <div className="date">9 سيبتمبر</div>
-                    </div>
+        </motion.div>
 
-                </div>
-            </div>
-            <div className={styles.item}>
-               <div className={styles.image_wrapper}>
-                <Fancybox>
-                  <Link href="/assets/ccrt2.png" data-fancybox="item">
-                    <a className="img" data-fancybox="item">
-                      <Image
-                        alt=""
-                        src="/assets/ccrt2.png"
-                        width="239"
-                        height="149"
-                        objectFit="contain"
-                      />
-                      <i className="fa fa-play"></i>
-                    </a>
-                    </Link>
-                </Fancybox> 
-               </div>
-                <div className={styles.item_des}>
-                    <p>اسم الدرس يكتب هنا ليقوم الطالب بالإطلاع عليه فيما بعد</p>
-                    <div className={styles.day_wrapper}>
-                    <Image src="/assets/profile/stopwatch-1.png" alt=".." width="22" height="22" objectFit="contain"/>
-                    <span className="day">يوم :</span>
-                    <div className="date">9 سيبتمبر</div>
-                    </div>
+      </AnimatePresence>
+      </TabPanel>
 
-                </div>
-            </div>
-            <div className={styles.item}>
-               <div className={styles.image_wrapper}>
-                <Fancybox>
-                  <Link href="/assets/ccrt3.png" data-fancybox="item">
-                    <a className="img" data-fancybox="item">
-                      <Image
-                        alt=""
-                        src="/assets/ccrt3.png"
-                        width="239"
-                        height="149"
-                        objectFit="contain"
-                      />
-                      <i className="fa fa-play"></i>
-                    </a>
-                    </Link>
-                </Fancybox> 
-               </div>
-                <div className={styles.item_des}>
-                    <p>اسم الدرس يكتب هنا ليقوم الطالب بالإطلاع عليه فيما بعد</p>
-                    <div className={styles.day_wrapper}>
-                    <Image src="/assets/profile/stopwatch-1.png" alt=".." width="22" height="22" objectFit="contain"/>
-                    <span className="day">يوم :</span>
-                    <div className="date">9 سيبتمبر</div>
-                    </div>
 
-                </div>
-            </div>
-            <div className={styles.item}>
-               <div className={styles.image_wrapper}>
-                <Fancybox>
-                  <Link href="/assets/ccrt.png" data-fancybox="item">
-                    <a className="img" data-fancybox="item">
-                      <Image
-                        alt=""
-                        src="/assets/ccrt.png"
-                        width="239"
-                        height="149"
-                        objectFit="contain"
-                      />
-                      <i className="fa fa-play"></i>
-                    </a>
-                    </Link>
-                </Fancybox> 
-               </div>
-                <div className={styles.item_des}>
-                    <p>اسم الدرس يكتب هنا ليقوم الطالب بالإطلاع عليه فيما بعد</p>
-                    <div className={styles.day_wrapper}>
-                    <Image src="/assets/profile/stopwatch-1.png" alt=".." width="22" height="22" objectFit="contain"/>
-                    <span className="day">يوم :</span>
-                    <div className="date">9 سيبتمبر</div>
-                    </div>
+      {/* Previous Questions TESTS */}
+      <TabPanel>
+      <AnimatePresence exitBeforeEnter>
+      <motion.div 
+          className={styles.tab_content}
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -10, opacity: 0 }}
+          transition={{ duration: 0.2 }}
+      >
 
-                </div>
-            </div>
-            <div className={styles.item}>
-               <div className={styles.image_wrapper}>
-                <Fancybox>
-                  <Link href="/assets/ccrt2.png" data-fancybox="item">
-                    <a className="img" data-fancybox="item">
-                      <Image
-                        alt=""
-                        src="/assets/ccrt2.png"
-                        width="239"
-                        height="149"
-                        objectFit="contain"
-                      />
-                      <i className="fa fa-play"></i>
-                    </a>
-                    </Link>
-                </Fancybox> 
-               </div>
-                <div className={styles.item_des}>
-                    <p>اسم الدرس يكتب هنا ليقوم الطالب بالإطلاع عليه فيما بعد</p>
-                    <div className={styles.day_wrapper}>
-                    <Image src="/assets/profile/stopwatch-1.png" alt=".." width="22" height="22" objectFit="contain"/>
-                    <span className="day">يوم :</span>
-                    <div className="date">9 سيبتمبر</div>
+         <h2> Previous Questions TESTS </h2>
+
+
+         <Table striped bordered hover responsive>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Number Of Question</th>
+          <th>Status</th>
+          <th>Review /Contiune</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Cardiliogy</td>
+          <td>20 Question</td>
+          <td>Completed</td>
+          <td><Link href="/"><a className="table_btn"><span> Review </span></a></Link> </td>
+        </tr>
+        <tr>
+          <td>Cardiliogy</td>
+          <td>20 Question</td>
+          <td>Exit Without Saving</td>
+          <td><Link href="/"><a className="table_btn continue"><span> Contiune </span></a></Link> </td>
+        </tr>
+        <tr>
+          <td>Cardiliogy</td>
+          <td>20 Question</td>
+          <td>Completed 20%</td>
+          <td><Link href="/"><a className="table_btn"><span> Review </span></a></Link> </td>
+        </tr>
+
+
+
+      </tbody>
+    </Table>
+
+        </motion.div>
+
+      </AnimatePresence>
+      </TabPanel>
+
+
+      {/* Previous Mock TESTS */}
+      <TabPanel>
+      <AnimatePresence exitBeforeEnter>
+      <motion.div 
+          className={styles.tab_content}
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -10, opacity: 0 }}
+          transition={{ duration: 0.2 }}
+      >
+
+         <h2> Previous Mock TESTS </h2>
+
+
+    <Table striped bordered hover responsive>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Number Of Question</th>
+          <th>Status</th>
+          <th>Review /Contiune</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Cardiliogy</td>
+          <td>20 Question</td>
+          <td>Completed</td>
+          <td><Link href="/"><a className="table_btn"><span> Review </span></a></Link> </td>
+        </tr>
+        <tr>
+          <td>Cardiliogy</td>
+          <td>20 Question</td>
+          <td>Exit Without Saving</td>
+          <td><Link href="/"><a className="table_btn continue"><span> Contiune </span></a></Link> </td>
+        </tr>
+        <tr>
+          <td>Cardiliogy</td>
+          <td>20 Question</td>
+          <td>Completed 20%</td>
+          <td><Link href="/"><a className="table_btn"><span> Review </span></a></Link> </td>
+        </tr>
+      </tbody>
+    </Table>
+
+        </motion.div>
+
+      </AnimatePresence>
+      </TabPanel>
+
+
+      {/* Edit Account */}
+      <TabPanel>
+      <AnimatePresence exitBeforeEnter>
+      <motion.div 
+          className={styles.tab_content_form}
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -10, opacity: 0 }}
+          transition={{ duration: 0.2 }}
+      >
+
+<div className={form.form_wrapper} style={{ margin: '0'}}>
+<h3> personal  <span>information</span></h3>
+      <Form noValidate onSubmit={handleSubmit(onSubmit)}>
+
+      <Form.Group controlId="nameID">
+                    <Form.Label> Name: </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Abdallah Hammad" 
+                      {...register("name")} isInvalid={!!errors.name}/>
+                    {errors.name?.message && (<Form.Control.Feedback type="invalid">{errors.name?.message}</Form.Control.Feedback>)}
+                  </Form.Group>
+
+                  <Form.Group controlId="emailID">
+                  <Form.Label> E-Mail: </Form.Label>
+                  <Form.Control
+                    type="email"
+                    placeholder="Hralryad@Gmail.Com" 
+                    {...register("email")} isInvalid={!!errors.email}/>
+                  {errors.email?.message && (<Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>)}
+                </Form.Group>
+
+                  <Form.Group controlId="mobileID">
+                  <Form.Label> Mobile: </Form.Label>
+                  <Form.Control
+                    type="tel"
+                    placeholder="54 1234567" 
+                    {...register("phone")} isInvalid={!!errors.phone}/>
+                  {errors.phone?.message && (<Form.Control.Feedback type="invalid">{errors.phone?.message}</Form.Control.Feedback>)}
+                </Form.Group>
+
+
+
+                <div className={form.submit_btn} style={{marginTop: '25px'}}>
+                    <Button type="submit" className='special_btn'> <span> Save </span> </Button>     
                     </div>
 
-                </div>
+            </Form>
+
             </div>
-            <div className={styles.item}>
-               <div className={styles.image_wrapper}>
-                <Fancybox>
-                  <Link href="/assets/ccrt3.png" data-fancybox="item">
-                    <a className="img" data-fancybox="item">
-                      <Image
-                        alt=""
-                        src="/assets/ccrt3.png"
-                        width="239"
-                        height="149"
-                        objectFit="contain"
-                      />
-                      <i className="fa fa-play"></i>
-                    </a>
-                    </Link>
-                </Fancybox> 
-               </div>
-                <div className={styles.item_des}>
-                    <p>اسم الدرس يكتب هنا ليقوم الطالب بالإطلاع عليه فيما بعد</p>
-                    <div className={styles.day_wrapper}>
-                    <Image src="/assets/profile/stopwatch-1.png" alt=".." width="22" height="22" objectFit="contain"/>
-                    <span className="day">يوم :</span>
-                    <div className="date">9 سيبتمبر</div>
+
+
+        </motion.div>
+
+      </AnimatePresence>
+      </TabPanel>
+
+
+      {/* Edit Password */}
+      <TabPanel>
+      <AnimatePresence exitBeforeEnter>
+      <motion.div 
+          className={styles.tab_content_form}
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -10, opacity: 0 }}
+          transition={{ duration: 0.2 }}
+      >
+
+<div className={form.form_wrapper} style={{ margin: '0'}}>
+<h3> Edit   <span>password</span></h3>
+      <Form noValidate onSubmit={handleSubmit(onSubmit)}>
+
+      <Form.Group className="password_wrap"  controlId="passID">
+          <Form.Label> current password : </Form.Label>
+          <Form.Control
+            type={passwordShown ? "text" : "password"}
+            placeholder="********"
+            {...register("password")} isInvalid={!!errors.password}/>
+          <i onClick={togglePasswordVisiblity}>{passwordShown ? eye : eye_slash}</i>
+          {errors.password?.message && (<Form.Control.Feedback type="invalid">{errors.password?.message}</Form.Control.Feedback>)}
+        </Form.Group>
+
+        <Form.Group className="password_wrap"  controlId="passID">
+          <Form.Label> new password : </Form.Label>
+          <Form.Control
+            type={passwordShown ? "text" : "password"}
+            placeholder="********"
+            {...register("password")} isInvalid={!!errors.password}/>
+          <i onClick={togglePasswordVisiblity}>{passwordShown ? eye : eye_slash}</i>
+          {errors.password?.message && (<Form.Control.Feedback type="invalid">{errors.password?.message}</Form.Control.Feedback>)}
+        </Form.Group>
+
+                <div className={form.submit_btn} style={{marginTop: '25px'}}>
+                    <Button type="submit" className='special_btn'> <span> Save </span> </Button>     
                     </div>
 
-                </div>
+            </Form>
+
             </div>
 
 
+        </motion.div>
 
-        </div>
-
-        </div>
-
-      </Panel>
-    {/*========== chatform ==============*/}
-      <Panel>
-      <div className={`${styles.tab_content} ${styles.chatform}`}>
-
-        <Row>
-            <Col md={3}>
-                <h2 className={styles.table_title}>جدول الحصص</h2>
-            </Col>
-            <Col md={4}></Col>
-            <Col md={5}>
-            <div className={styles.full_date}>
-                <div className={styles.time}>
-                    <span dangerouslySetInnerHTML={{__html: formatAMPM(new Date)}}></span>
-                </div>
-                <div className={styles.date}>
-                  <span>{day}</span><span><br />{month}</span>
-                </div>
-            </div>
-            </Col>
-        </Row>
-
-        <div className={styles.items}>
-
-
-            <div className={`${styles.item} ${styles.receive}`}>
-              <div className={styles.right_side}>
-                <span className={styles.person_name}>عبدالله بدران</span>
-                <div className={styles.message_wrapper}>
-                  <p className={styles.message}>
-                كيف حالك يا أحمد 
-                هل انت جاهز لحل الواجب ؟
-                </p></div>
-                <span className={styles.time}>2:45</span>
-              </div>
-              <div className={styles.left_side}>
-                <Image src="/assets/teacher-2.png" alt=".." width="35" height="35" objectFit="contain"/>
-              </div>
-            </div>
-
-            <div className={`${styles.item} ${styles.send}`}>
-              <div className={styles.right_side}>
-                <div className={styles.message_wrapper}>
-                  <p className={styles.message}>
-                كيف حالك يا أحمد 
-                هل انت جاهز لحل الواجب ؟
-                </p></div>
-                <span className={styles.time}>2:45</span>
-              </div>
-              <div className={styles.left_side}>
-                <Image src="/assets/teacher-2.png" alt=".." width="35" height="35" objectFit="contain"/>
-              </div>
-            </div>
-
-
-        </div>
-
-
-        <div className="emoij-btn">
-          <span onClick={() => setEmojiVisible(() => !emojiVisible)}>
-            &#128512;
-          </span>
-          {emojiVisible && <Picker onEmojiClick={onEmojiClick} />}
-        </div>
-
-
-        {/* <div>
-      {chosenEmoji ? (
-        <span>You chose: {chosenEmoji.emoji}</span>
-      ) : (
-        <span>No emoji Chosen</span>
-      )}
-      <Picker onEmojiClick={onEmojiClick} />
-    </div> */}
-        <div className={styles.form_chat}>
-            <Form noValidate onSubmit={handleSubmit(onSubmit)}>
-            <Form.Group>
-              <Form.Control
-                type="text"
-                defaultValue={messageInput}
-                onChange={(e) => setMessageInput(e.target.value)}
-                className={styles.text_input}
-                placeholder="اكتب هنا .." 
-                {...register("message")} isInvalid={!!errors.message}
-                />
-
-            {errors.message?.message && (<Form.Control.Feedback type="invalid">{errors.message?.message}</Form.Control.Feedback>)}
-            </Form.Group>
-
-            <div className={styles.form_btns}>
-            <Button type="submit" className={styles.send_icon}> <FontAwesomeIcon width={46} height={39} color={'#80AEFF'}icon={faPaperPlane} /> </Button>     
-            </div>
-
-                </Form>              
-            </div>
-
-        </div>
-
-      </Panel>
-    {/*========== chatform ==============*/}
-      <Panel>
-      <div className={`${styles.tab_content} ${styles.chatform}`}>
-
-        <Row>
-            <Col md={3}>
-                <h2 className={styles.table_title}>جدول الحصص</h2>
-            </Col>
-            <Col md={4}></Col>
-            <Col md={5}>
-            <div className={styles.full_date}>
-                <div className={styles.time}>
-                    <span dangerouslySetInnerHTML={{__html: formatAMPM(new Date)}}></span>
-                </div>
-                <div className={styles.date}>
-                  <span>{day}</span><span><br />{month}</span>
-                </div>
-            </div>
-            </Col>
-        </Row>
-
-        <div className={styles.items}>
-
-
-            <div className={`${styles.item} ${styles.receive}`}>
-              <div className={styles.right_side}>
-                <span className={styles.person_name}>عبدالله بدران</span>
-                <div className={styles.message_wrapper}>
-                  <p className={styles.message}>
-                كيف حالك يا أحمد 
-                هل انت جاهز لحل الواجب ؟
-                </p></div>
-                <span className={styles.time}>2:45</span>
-              </div>
-              <div className={styles.left_side}>
-                <Image src="/assets/teacher-2.png" alt=".." width="35" height="35" objectFit="contain"/>
-              </div>
-            </div>
-
-            <div className={`${styles.item} ${styles.send}`}>
-              <div className={styles.right_side}>
-                <div className={styles.message_wrapper}>
-                  <p className={styles.message}>
-                كيف حالك يا أحمد 
-                هل انت جاهز لحل الواجب ؟
-                </p></div>
-                <span className={styles.time}>2:45</span>
-              </div>
-              <div className={styles.left_side}>
-                <Image src="/assets/teacher-2.png" alt=".." width="35" height="35" objectFit="contain"/>
-              </div>
-            </div>
-
-
-        </div>
-
-
-        <div className={styles.form_chat}>
-            <Form noValidate onSubmit={handleSubmit(onSubmit)}>
-            <Form.Group>
-              <Form.Control
-                type="text"
-                className={styles.text_input}
-                placeholder="اكتب هنا .." 
-                {...register("message")} isInvalid={!!errors.message}/>
-
-            {errors.message?.message && (<Form.Control.Feedback type="invalid">{errors.message?.message}</Form.Control.Feedback>)}
-            </Form.Group>
-
-            <div className={styles.form_btns}>
-            <Button type="submit" className={styles.send_icon}> <FontAwesomeIcon width={46} height={39} color={'#80AEFF'}icon={faPaperPlane} /> </Button>     
-            </div>
-
-                </Form>              
-            </div>
-
-        </div>
-
-      </Panel>
+      </AnimatePresence>
+      </TabPanel>
 
 
 
 
 
       </Col>
-
-
 
 
     </Row>
     </Tabs>
   </Container>
 </div>
+
+
+
+
 
 
 

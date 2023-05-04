@@ -1,9 +1,0 @@
-@import url(bootstrap/dist/css/bootstrap-grid.min.css);
-
-body:lang(en) {
-    text-align: left;
-    direction: ltr;
-  }
-  .main-content:lang(en) div:first-child{
-    overflow: hidden;
-  }

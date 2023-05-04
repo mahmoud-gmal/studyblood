@@ -165,7 +165,7 @@ p {
   text-transform: lowercase;
 }
 
-.page_content{padding: 70px 0;  }
+.page_content{padding: 70px 0; }
 
 .up {
   position: fixed;
@@ -191,16 +191,22 @@ p {
   animation: fadeInOut 1s linear infinite
 }
  .up svg{
-    color: #FFF !important;
-    margin: auto !important;
-    width: 18px !important;
+  color: #FFF !important;
+  margin: auto !important;
+  width: 15px !important;
+  display: block;
  }
 .up:hover {
   transform: scale(1.2)
 }
 
 
+
 /*========================== form global ======================*/
+input[type="checkbox"]:checked  ~ .checkbox-alias .fa {  
+  color: #494947;
+  }
+
 
 .password_wrap{
 position: relative;
@@ -212,8 +218,8 @@ position: relative;
   height: 0;
   cursor: pointer;
   position: absolute;
-  left: 14px;
-  top: 41px;
+  right: 15px;
+  top: 45px;
   color: #707070;
 }
 
@@ -246,4 +252,12 @@ input:focus-visible , select:focus-visible , textarea:focus-visible {
 }
 @media (max-width:400.9px) {
   .profile{padding: 60px 15px 90px;}
+}
+
+
+/*---------- profile ------------- */
+.profile_nav_pills li.active{
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+  border-radius: 5px 5px 0px 0px;
+  color: #000;
 }

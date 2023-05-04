@@ -20,6 +20,7 @@ import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
+import { toast } from "react-toastify";
 
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
@@ -47,24 +48,45 @@ const Contact = () => {
 
 
 
-  const { register,handleSubmit, formState: { errors }} = useForm({
-    resolver: yupResolver(validationSchema)
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
   });
 
+  const onSubmit = (values) => {
 
-  const onSubmit = (data) =>{
-    console.log(data);
-  //   let url = "http://localhost:4000/things/register";
-  //   fetch(url, {
-  //     method: "POST",
-  //     headers: {'Content-Type': 'application/json'},
-  //     body: JSON.stringify(formData)
-  //   })
-  //     .then((response) => response.json())
-  //     .then((result) => console.log(result));
-  //  };
 
-  }  
+    const data = {
+      name: values.name,
+      email: values.email,
+      phone: values.phone,
+      message: values.message,
+    };
+
+    let url = `${process.env.NEXT_PUBLIC_API_URI}/page/contact`;
+    fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    })
+      .then((res) => 
+      {
+        if (res.status == 200) {
+          toast.success("sent succesfully" ,{}) ;
+          reset();
+
+      }else{
+        toast.error("There was a problem sending, try again.",{})
+      }
+      }
+
+      )
+      // .then((result) => console.log(result));
+  };
 
 
   return (

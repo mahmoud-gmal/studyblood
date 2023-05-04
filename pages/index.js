@@ -123,7 +123,8 @@ const topicsData = topics?.data;
                     <p>
                     {bannerData[0]?.description}
                     </p>
-                    <Link href={bannerData[0]?.button_link}>
+                    <Link href="#topics">
+                    {/* <Link href={bannerData[0]?.button_link ? bannerData[0]?.button_link : '#topics'}> */}
             
                         <a className="special_btn"><span>  {bannerData[0]?.button_content} </span> </a>
                     </Link>
@@ -169,7 +170,7 @@ const topicsData = topics?.data;
 
         {/*================= Topics ==========*/}
 
-        <motion.div className={styles.topics}
+        <motion.div id="topics" className={styles.topics}
         // ref={ref}
         // initial="hidden"
         // animate={inView ? 'visible' : 'hidden'}

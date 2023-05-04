@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/Link";
+import { useAuth } from "./../../context/AuthContext";
 import React, {useEffect, useState, useRef} from "react";
 // import { useState, useEffect } from "react";
 // fontawesome
@@ -98,10 +99,33 @@ const handleClick = (event) =>{
 
 const isMobScreen = useMediaQuery({ query: '(max-width: 991.9px)' })
 
-
+const { token, logout, displayName } = useAuth();
 
 
 const {ref,isComponentVisible,setIsComponentVisible} = useComponentVisible(true);
+
+
+// logout
+const handleLogout =  async (e) =>{  
+  e.preventDefault()
+  try {
+    await logout();
+    // router.push('/')
+  } catch (error) {
+    if(error){
+      console.log(error.response);
+    }
+  }
+
+}
+
+// Token
+const [localToken, setLocalToken] = useState(null);
+useEffect(() => {
+  // const localToken = typeof window !== "undefined" ? localStorage.getItem('token') : null;
+  setLocalToken(localStorage.getItem('token'))
+}, [localToken, token])
+
 
 
   return (
@@ -157,16 +181,30 @@ const {ref,isComponentVisible,setIsComponentVisible} = useComponentVisible(true)
             <Col md={3}>
               <div className="left_side d-flex align-items-center justify-content-end">
                 <div className={styles.btns}>
+
+                {token || localToken ? 
+                  (<><Link href="/profile">
+                    <a className={`special_btn ${styles.btn_log} ${styles.active}`}>
+                      <span> My Profile</span>
+                    </a>
+                  </Link>
                   <Link href="/">
+                    <a onClick={handleLogout} className={`special_btn ${styles.btn_log}`}>
+                      <span>Log Out</span>
+                    </a>
+                  </Link></>) 
+
+                  : ( <><Link href="/signup">
                     <a className={`special_btn ${styles.btn_log} ${styles.active}`}>
                       <span> Sign Up </span>
                     </a>
                   </Link>
-                  <Link href="/">
+                  
+                  <Link href="/login">
                     <a className={`special_btn ${styles.btn_log}`}>
                       <span> Log In</span>
                     </a>
-                  </Link>
+                  </Link></>)}
                 </div>
               </div>
             </Col>
@@ -244,16 +282,32 @@ const {ref,isComponentVisible,setIsComponentVisible} = useComponentVisible(true)
                     <Link href="/contact">Contact us</Link>
                   </li>
                 <div className={`${styles.btns} ${styles.btns_mob}`}>
-                <Link href="/signup">
-                  <a className={`special_btn ${styles.btn_log} ${styles.active}`}>
-                    <span> Sign Up </span>
-                  </a>
-                </Link>
-                <Link href="/login">
-                  <a className={`special_btn ${styles.btn_log}`}>
-                    <span> Log In</span>
-                  </a>
-                </Link>
+
+                {token || localToken ? 
+                  (<><Link href="/profile">
+                    <a className={`special_btn ${styles.btn_log} ${styles.active}`}>
+                      <span> My Profile</span>
+                    </a>
+                  </Link>
+                  <Link href="/">
+                    <a onClick={handleLogout} className={`special_btn ${styles.btn_log}`}>
+                      <span>Log Out</span>
+                    </a>
+                  </Link></>) 
+
+                  : ( <><Link href="/signup">
+                    <a className={`special_btn ${styles.btn_log} ${styles.active}`}>
+                      <span> Sign Up </span>
+                    </a>
+                  </Link>
+                  
+                  <Link href="/login">
+                    <a className={`special_btn ${styles.btn_log}`}>
+                      <span> Log In</span>
+                    </a>
+                  </Link></>)}
+
+
               </div>
                 </motion.ul>
 

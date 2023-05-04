@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useAuth } from "./../src/context/AuthContext";
 import Router from 'next/router'
 import Image from "next/image";
 import Link from "next/Link";
@@ -6,7 +7,7 @@ import Meta from "../src/components/Meta";
 import { toast } from "react-toastify";
 import { Button, Col, Container, Form, FormGroup } from 'react-bootstrap';
 // styles
-import styles from "./../styles/forms/login.module.css";
+import styles from "./../styles/pages/form.module.css";
 //hook-form & yup
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -14,12 +15,12 @@ import * as Yup from "yup";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
-    .required(".البريد الالكتروني مطلوب")
-    .email(".البريد إلكتروني غير صالح"),
+    .required("Email is required.")
+    .email("Invalid email."),
   password: Yup.string()
-    .required(".كلمة المرور مطلوبة")
-    .min(8, 'كلمة المرور قصيرة جدًا - يجب ألا تقل عن 8 أحرف.')
-    .matches(/[a-zA-Z]/, 'يمكن أن تحتوي كلمة المرور على أحرف لاتينية فقط.'),
+    .required(".Password is required")
+    .min(8, 'Password is too short - must be at least 8 characters long.')
+    .matches(/[a-zA-Z]/, 'Password can only contain Latin characters.'),
 });
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -36,22 +37,27 @@ const Login = () => {
   };
 
 
+  const { login } = useAuth();
+
   const { register,handleSubmit, formState: { errors }} = useForm({
     resolver: yupResolver(validationSchema)
   });
 
 
-  const onSubmit = (data) =>{
-    console.log(data);
-  //   let url = "http://localhost:4000/things/register";
-  //   fetch(url, {
-  //     method: "POST",
-  //     headers: {'Content-Type': 'application/json'},
-  //     body: JSON.stringify(formData)
-  //   })
-  //     .then((response) => response.json())
-  //     .then((result) => console.log(result));
-  //  };
+  const onSubmit =  async (values) =>{
+
+    const formData = {
+      email: values.email,
+      password: values.password,
+    }
+    try {
+      await login(formData);
+      // history.push("/");
+    } catch (error) {
+      console.log('page error');
+      console.log(error);
+    }
+
 
   }
 
@@ -61,21 +67,19 @@ const Login = () => {
   return (
     <>
       <Meta title="studyblood | login" />
-      <main className="main-content">
+      <main className={styles.main_content}>
 
 
           <Container>
           <div className={styles.form_wrapper}>
-            <h2>
-            تسجيل الدخول
-            </h2>
+          <h3> LOG <span>IN</span></h3>
       <Form noValidate onSubmit={handleSubmit(onSubmit)}>
 
         <Form.Group controlId="emailID">
-          <Form.Label> البريد الإلكترونى </Form.Label>
+          <Form.Label> E-Mail: </Form.Label>
           <Form.Control
             type="email"
-            placeholder="example@test.com" 
+            placeholder="Hralryad@Gmail.Com" 
             {...register("email")} isInvalid={!!errors.email}/>
 
 {errors.email?.message && (<Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>)}
@@ -83,68 +87,34 @@ const Login = () => {
 
 
         <Form.Group className="password_wrap"  controlId="passID">
-          <Form.Label> كلمة المرور </Form.Label>
+          <Form.Label> Password : </Form.Label>
           <Form.Control
             type={passwordShown ? "text" : "password"}
-            placeholder="كلمة المرور"
+            placeholder="********"
             {...register("password")} isInvalid={!!errors.password}/>
           <i onClick={togglePasswordVisiblity}>{passwordShown ? eye : eye_slash}</i>
           {errors.password?.message && (<Form.Control.Feedback type="invalid">{errors.password?.message}</Form.Control.Feedback>)}
         </Form.Group>
 
 
-        {/* <Form.Group className="mb-3" controlId="formGroupremember">
-          <Form.Control type="checkbox"  {...register("rememberme")}/>
-          <Form.Label> تذكرنى</Form.Label>
-        </Form.Group>    */}
-
         <Form.Group controlId="remeberID" style={{marginTop: '17px'}}>
         <Form.Check
           className={styles.form_check}
-          style={{ display: 'inline-flex', alignItems: 'center'}}
-          label="تذكرنى"
+          label="Remember Me"
           type="checkbox"  {...register("rememberme")}
-          // feedback="You must agree before submitting."
-          // feedbackType="invalid"
         />
-                <Link 
-                href="/forget-password"><a className={styles.forget} style={{
-                  display: 'inlineBlock',
-                  marginRight: 'calc(100% - 174px)'
-                }}>هل نسيت كلمة المرور؟</a></Link>
+                <Link href="/forget-password"><a className={styles.forget} > Forget Password </a></Link>
       </Form.Group>
-      <div className='' >
 
-      </div>
-      <div className='d-flex justify-content-center' style={{marginTop: '25px'}}>
-
-      <Button type="submit" className='special_btn' style={{display: 'block',width: '100%'}}> <span>تسجيل دخول</span> </Button>     
-      </div>
+                <div className={styles.submit_btn} style={{marginTop: '25px'}}>
+                    <Button type="submit" className='special_btn'> <span> Log In </span> </Button>     
+                    </div>
 
             </Form>
-             <div className={styles.form_under_text}>
-              <span className={styles.or_dashed}>او</span>
-              <div className={styles.google_signin}>
-              <Link href="/">
-                  <a>
-                    <Image
-                      alt="logo"
-                      src="/assets/icons8-google.svg"
-                      width="24"
-                      height="24"
-                      // layout="responsive"
-                    />
-                    <span>تابع بإستخدام ايميل جوجل</span>
 
-                  </a>
-                </Link>
-              </div>
-
-             </div>
             </div>
             <div className={styles.form_info}>
-            <span>ليس لديك عضوية؟</span>
-            <Link href="/signup"><a>سجل حساب جديد</a></Link>
+            <Link href="/signup"><a> Create An Account</a></Link>
             </div>
           </Container>
      

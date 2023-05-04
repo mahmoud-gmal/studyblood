@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@bumaga/tabs": "^0.2.0",
     "@fancyapps/ui": "^4.0.31",
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
     "@fortawesome/free-brands-svg-icons": "^6.2.0",
@@ -26,10 +25,12 @@
     "next-i18next": "^12.1.0",
     "react": "18.2.0",
     "react-bootstrap": "^2.5.0",
+    "react-confirm-alert": "^3.0.6",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.39.5",
     "react-intersection-observer": "^9.4.0",
     "react-responsive": "^9.0.2",
+    "react-tabs": "^6.0.1",
     "react-toastify": "^8.2.0",
     "swiper": "6.8",
     "yup": "^0.32.11"

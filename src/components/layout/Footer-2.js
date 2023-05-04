@@ -22,7 +22,7 @@ import axios from "axios";
 const baseURL = `${process.env.NEXT_PUBLIC_API_URI}/page/home/logos`;
 
 
-const Footer = () => {
+const Footer2 = () => {
 
 // footer logo
 const [logo, setLogo] = useState();
@@ -65,49 +65,12 @@ isBrowser() ? window.addEventListener('scroll', toggleVisible) : '';
       <button class="up" onClick={scrollToTop}  style={{display: visible ? 'inline' : 'none'}}>
         <FontAwesomeIcon icon={faArrowUp} />
         </button>
-          <div className={styles.footer_tp}>
-        <Container>
-
-
-            <div className={styles.logo_footer}>
-                <Link href="/">
-                  <>
-                    <Image
-                      alt="logo"
-                      src={logo ? logo : '/assets/logofooter.png'}
-                      width="236"
-                      height="204"
-                      objectFit="contain"
-                    />
-                  </>
-                </Link>
-              </div>
-
-                <ul className={styles.links}>
-                  <li>
-                    <Link href="/">home</Link>
-                  </li>
-                  <li>
-                    <Link href="/about">about us</Link>
-                  </li>
-                  <li>
-                    <Link href="/work-with-us">work with us</Link>
-                  </li>
-                  <li>
-                    <Link href="/contact">contact us</Link>
-                  </li>
-                </ul>
-                </Container>
-             </div>
-
 
             <div className={styles.copyrights}>
               <Container>
                 <p> all rights reserved to studyblood </p>
               </Container>
             </div>
-
-
 
 
       </div>
@@ -127,4 +90,4 @@ isBrowser() ? window.addEventListener('scroll', toggleVisible) : '';
   );
 };
 
-export default Footer;
+export default Footer2;
