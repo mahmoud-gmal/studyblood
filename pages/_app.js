@@ -37,13 +37,13 @@ function MyApp({ Component, pageProps, router  }) {
 else if (router.pathname.startsWith('/profile')) {
 
   return (
-      <div className="wrap_app">
           <AuthProvider>
-                <Header />
-                  <Component {...pageProps} />
-                <Footer />
+            <div className="wrap_app">
+                      <Header />
+                        <Component {...pageProps} />
+                      <Footer />
+            </div>
           </AuthProvider>
-      </div>
   )
 
 }
@@ -51,13 +51,13 @@ else if (router.pathname.startsWith('/profile')) {
 
   return (
     <>
-    <div className="wrap_app">
       <AuthProvider>
-            <Header />
-              <Component {...pageProps} />
-            <Footer />
+        <div className="wrap_app">
+                <Header />
+                  <Component {...pageProps} />
+                <Footer />
+          </div>
       </AuthProvider>
-      </div>
 
     </>
   );

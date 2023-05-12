@@ -203,6 +203,12 @@ p {
 
 
 /*========================== form global ======================*/
+
+.not_valid_btn {
+  opacity: .5;
+  cursor: not-allowed !important;
+}
+
 input[type="checkbox"]:checked  ~ .checkbox-alias .fa {  
   color: #494947;
   }

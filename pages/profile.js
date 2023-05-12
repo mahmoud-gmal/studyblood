@@ -1,5 +1,6 @@
 // react core
 import React, { useState , useEffect, useRef } from "react";
+import { useAuth } from "./../src/context/AuthContext";
 import { useRouter } from "next/router";
 // nextjs components
 import Image from "next/image";
@@ -31,7 +32,8 @@ import TabList from "react-tabs/lib/components/TabList";
 import Tab from "react-tabs/lib/components/Tab";
 import TabPanel from "react-tabs/lib/components/TabPanel";
 
-
+// 
+import axios from "axios";
 
 
 // https://codesandbox.io/s/flamboyant-lucy-sgs1ys?file=/src/App.tsx
@@ -42,26 +44,34 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { AnimatePresence } from "framer-motion";
+import withAuth from "../src/components/auth/withAuth";
 
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
 
-const validationSchema = Yup.object().shape({
+
+const schema1 = Yup.object().shape({
   name: Yup.string()
     .required("Name is required.")
     .min(3, "must be at least 3 characters."),
   email: Yup.string()
-    .required("Email is required.")
-    .email("Invalid email."),
+    .required("E-mail is required.")
+    .email("E-mail field must be a valid email."),
   phone: Yup.string()
     .required("Phone number is required.")
-    .matches(phoneRegExp, 'Phone number is not valid'),
-
-
-  
+    .matches(phoneRegExp, 'Phone number is not valid')
 });
 
-
+const schema2 = Yup.object().shape({
+  password: Yup.string()
+    .required(".Password is required")
+    .min(8, 'Password is too short - must be at least 8 characters long.')
+    .matches(/[a-zA-Z]/, 'Password can only contain Latin characters.'),
+  newpassword: Yup.string()
+    .required(".Password is required")
+    .min(8, 'Password is too short - must be at least 8 characters long.')
+    .matches(/[a-zA-Z]/, 'Password can only contain Latin characters.'),
+});
 
 
 
@@ -72,26 +82,189 @@ const validationSchema = Yup.object().shape({
 // // import "emoji-mart/css/emoji-mart.css";
 
 
-export default function Profile({ }) {
+const Profile = () =>{
+
+  const router = useRouter();
+
+  
+// context
+const { editAccount, updatePass, token,tokenChanged } = useAuth();
+
+const [prevQueTests, setPrevQueTests] = useState();
+const [prevTimeTests, setPrevTimeTests] = useState();
+const [prevMockTests, setPrevMockTests] = useState();
 
 
+// Token
+
+useEffect(() => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    router.push('/login');
+  }
+}, [token])
+
+
+
+
+// profile exam
+
+useEffect(() => {
+
+
+  // PREVIOUS TIMED TESTS
+    axios.get(
+      `${process.env.NEXT_PUBLIC_API_URI}/profile/previous-time`,
+      {headers: {
+              "Content-type": "Application/json",
+              "Authorization": `Bearer ${token ? token : localStorage.getItem('token')}`,
+              }   
+          }
+    )
+    .then((response) => {
+        // console.log(response.data.data);
+        setPrevTimeTests(response.data.data);
+      },
+      (error) => {
+        // if token changed so become unathoried request
+        // if(error.response.status == 401){
+          // router.push('/login')
+          tokenChanged();
+        // }
+        console.log("hhhhhhhhh");
+      }
+    );
+
+  // Previous Questions TESTS
+    axios.get(
+      `${process.env.NEXT_PUBLIC_API_URI}/profile/previous-question`,
+      {headers: {
+              "Content-type": "Application/json",
+              "Authorization": `Bearer ${token ? token : localStorage.getItem('token')}`,
+              }   
+          }
+    )
+    .then((response) => {
+        // console.log(response.data.data);
+        setPrevQueTests(response.data.data);
+      },
+      (error) => {
+        // if token changed so become unathoried request
+        // if(error.response.status == 401){
+          // router.push('/login')
+          tokenChanged();
+        // }
+        // console.log(error.response);
+      }
+    );
+
+
+  // Previous Mock TESTS
+    axios.get(
+      `${process.env.NEXT_PUBLIC_API_URI}/profile/previous-mock`,
+      {headers: {
+              "Content-type": "Application/json",
+              "Authorization": `Bearer ${token ? token : localStorage.getItem('token')}`,
+              }   
+          }
+    )
+    .then((response) => {
+        // console.log(response.data.data);
+        setPrevMockTests(response.data.data);
+      },
+      (error) => {
+        // if token changed so become unathoried request
+        // if(error.response.status == 401){
+          // router.push('/login')
+          tokenChanged();
+        // }
+        // console.log(error.response);
+      }
+    );
+
+
+
+
+
+
+  }, [])
+
+
+
+
+// password
   const [passwordShown, setPasswordShown] = useState(false);
   const togglePasswordVisiblity = () => {
     setPasswordShown(passwordShown ? false : true);
   };
+// new password
+  const [passwordShown2, setPasswordShown2] = useState(false);
+  const togglePasswordVisiblity2 = () => {
+    setPasswordShown2(passwordShown2 ? false : true);
+  };
 
+
+
+
+  const defaultValues = typeof window !== 'undefined' ? {
+    name: localStorage.getItem('name'),
+    email: localStorage.getItem('email'),
+    phone: localStorage.getItem('phone'),
+  } : {};
 
 
 // validition
-const { register,handleSubmit, formState: { errors }} = useForm({
-  resolver: yupResolver(validationSchema)
+
+const EditAccount = useForm({
+  resolver: yupResolver(schema1),
+  mode: 'onTouched', // enable "on touch" validation
+  defaultValues,
+  // defaultValues: { input1: '', input2: '' },
+});
+
+const UpdatePass = useForm({
+  resolver: yupResolver(schema2),
+  mode: 'onTouched', // enable "on touch" validation
+  // defaultValues: { input1: '', input2: '' },
 });
 
 
-const onSubmit = (data) =>{
-  console.log(data);
 
-}
+const onSubmitEditAccount = async (values) => {
+
+  const formData = {
+    name: values.name,
+    email: values.email,
+    phone: values.phone,
+  }
+
+  await editAccount(formData);
+
+  // try {
+    // await editAccount(formData);
+    // history.push("/");
+  // } catch (error) {
+  //   console.log('Error:', error.message);
+  // }
+
+};
+
+
+
+const onSubmitUpdatePass = async (values) => {
+  const formData = {
+    current_password: values.password,
+    new_password: values.newpassword,
+  }
+  try {
+    await updatePass(formData);
+    // history.push("/");
+  } catch (error) {
+    console.log('page error');
+    console.log(error);
+  }
+};
+
 
   return (
     <>
@@ -147,24 +320,16 @@ const onSubmit = (data) =>{
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>Cardiliogy</td>
-          <td>20 Question</td>
-          <td>Completed</td>
-          <td><Link href="/"><a className="table_btn"><span> Review </span></a></Link> </td>
+
+      {prevTimeTests &&
+                prevTimeTests.map((item, i) => (
+        <tr key={i}>
+          <td>{item.topic_name}</td>
+          <td>{item.details}</td>
+          <td>{item.status}</td>
+          <td><Link href="/"><a className={`table_btn ${item.operation != "Review" ? "continue" : ""}`}><span> {item.operation} </span></a></Link> </td>
         </tr>
-        <tr>
-          <td>Cardiliogy</td>
-          <td>20 Question</td>
-          <td>Exit Without Saving</td>
-          <td><Link href="/"><a className="table_btn continue"><span> Contiune </span></a></Link> </td>
-        </tr>
-        <tr>
-          <td>Cardiliogy</td>
-          <td>20 Question</td>
-          <td>Completed 20%</td>
-          <td><Link href="/"><a className="table_btn"><span> Review </span></a></Link> </td>
-        </tr>
+        ))}
 
 
 
@@ -201,25 +366,15 @@ const onSubmit = (data) =>{
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>Cardiliogy</td>
-          <td>20 Question</td>
-          <td>Completed</td>
-          <td><Link href="/"><a className="table_btn"><span> Review </span></a></Link> </td>
+      {prevQueTests &&
+                prevQueTests.map((item, i) => (
+        <tr key={i}>
+          <td>{item.topic_name}</td>
+          <td>{item.details}</td>
+          <td>{item.status}</td>
+          <td><Link href="/"><a className={`table_btn ${item.operation != "Review" ? "continue" : ""}`}><span> {item.operation} </span></a></Link> </td>
         </tr>
-        <tr>
-          <td>Cardiliogy</td>
-          <td>20 Question</td>
-          <td>Exit Without Saving</td>
-          <td><Link href="/"><a className="table_btn continue"><span> Contiune </span></a></Link> </td>
-        </tr>
-        <tr>
-          <td>Cardiliogy</td>
-          <td>20 Question</td>
-          <td>Completed 20%</td>
-          <td><Link href="/"><a className="table_btn"><span> Review </span></a></Link> </td>
-        </tr>
-
+        ))}
 
 
       </tbody>
@@ -255,24 +410,20 @@ const onSubmit = (data) =>{
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>Cardiliogy</td>
-          <td>20 Question</td>
-          <td>Completed</td>
-          <td><Link href="/"><a className="table_btn"><span> Review </span></a></Link> </td>
+
+      {prevMockTests &&
+                prevMockTests.map((item, i) => (
+        <tr key={i}>
+          <td>{item.topic_name}</td>
+          <td>{item.details}</td>
+          <td>{item.status}</td>
+          <td><Link href="/"><a className={`table_btn ${item.operation != "Review" ? "continue" : ""}`}><span> {item.operation} </span></a></Link> </td>
         </tr>
-        <tr>
-          <td>Cardiliogy</td>
-          <td>20 Question</td>
-          <td>Exit Without Saving</td>
-          <td><Link href="/"><a className="table_btn continue"><span> Contiune </span></a></Link> </td>
-        </tr>
-        <tr>
-          <td>Cardiliogy</td>
-          <td>20 Question</td>
-          <td>Completed 20%</td>
-          <td><Link href="/"><a className="table_btn"><span> Review </span></a></Link> </td>
-        </tr>
+        ))}
+
+
+
+
       </tbody>
     </Table>
 
@@ -295,15 +446,15 @@ const onSubmit = (data) =>{
 
 <div className={form.form_wrapper} style={{ margin: '0'}}>
 <h3> personal  <span>information</span></h3>
-      <Form noValidate onSubmit={handleSubmit(onSubmit)}>
+      <Form onSubmit={EditAccount.handleSubmit(onSubmitEditAccount)}>
 
       <Form.Group controlId="nameID">
                     <Form.Label> Name: </Form.Label>
                     <Form.Control
                       type="text"
                       placeholder="Abdallah Hammad" 
-                      {...register("name")} isInvalid={!!errors.name}/>
-                    {errors.name?.message && (<Form.Control.Feedback type="invalid">{errors.name?.message}</Form.Control.Feedback>)}
+                      {...EditAccount.register("name")} isInvalid={!!EditAccount.formState.errors.name}/>
+                    {EditAccount.formState.touchedFields.name && EditAccount.formState.errors.name && (<Form.Control.Feedback type="invalid">{EditAccount.formState.errors.name.message}</Form.Control.Feedback>)}
                   </Form.Group>
 
                   <Form.Group controlId="emailID">
@@ -311,8 +462,8 @@ const onSubmit = (data) =>{
                   <Form.Control
                     type="email"
                     placeholder="Hralryad@Gmail.Com" 
-                    {...register("email")} isInvalid={!!errors.email}/>
-                  {errors.email?.message && (<Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>)}
+                    {...EditAccount.register("email")} isInvalid={!!EditAccount.formState.errors.email}/>
+                  {EditAccount.formState.touchedFields.email && EditAccount.formState.errors.email && (<Form.Control.Feedback type="invalid">{EditAccount.formState.errors.email.message}</Form.Control.Feedback>)}
                 </Form.Group>
 
                   <Form.Group controlId="mobileID">
@@ -320,14 +471,14 @@ const onSubmit = (data) =>{
                   <Form.Control
                     type="tel"
                     placeholder="54 1234567" 
-                    {...register("phone")} isInvalid={!!errors.phone}/>
-                  {errors.phone?.message && (<Form.Control.Feedback type="invalid">{errors.phone?.message}</Form.Control.Feedback>)}
+                    {...EditAccount.register("phone")} isInvalid={!!EditAccount.formState.errors.phone}/>
+                  {EditAccount.formState.touchedFields.phone && EditAccount.formState.errors.phone && (<Form.Control.Feedback type="invalid">{EditAccount.formState.errors.phone.message}</Form.Control.Feedback>)}
                 </Form.Group>
 
 
 
                 <div className={form.submit_btn} style={{marginTop: '25px'}}>
-                    <Button type="submit" className='special_btn'> <span> Save </span> </Button>     
+                    <Button type="submit" disabled={!EditAccount.formState.isValid} className={`special_btn ${!EditAccount.formState.isValid ? 'not_valid_btn' : ''}`}> <span> Save </span> </Button>     
                     </div>
 
             </Form>
@@ -354,30 +505,30 @@ const onSubmit = (data) =>{
 
 <div className={form.form_wrapper} style={{ margin: '0'}}>
 <h3> Edit   <span>password</span></h3>
-      <Form noValidate onSubmit={handleSubmit(onSubmit)}>
+<Form onSubmit={UpdatePass.handleSubmit(onSubmitUpdatePass)}>
 
       <Form.Group className="password_wrap"  controlId="passID">
           <Form.Label> current password : </Form.Label>
           <Form.Control
             type={passwordShown ? "text" : "password"}
             placeholder="********"
-            {...register("password")} isInvalid={!!errors.password}/>
+            {...UpdatePass.register("password")} isInvalid={!!UpdatePass.formState.errors.password}/>
           <i onClick={togglePasswordVisiblity}>{passwordShown ? eye : eye_slash}</i>
-          {errors.password?.message && (<Form.Control.Feedback type="invalid">{errors.password?.message}</Form.Control.Feedback>)}
+          {UpdatePass.formState.touchedFields.password && UpdatePass.formState.errors.password && (<Form.Control.Feedback type="invalid">{UpdatePass.formState.errors.password.message}</Form.Control.Feedback>)}
         </Form.Group>
 
         <Form.Group className="password_wrap"  controlId="passID">
           <Form.Label> new password : </Form.Label>
           <Form.Control
-            type={passwordShown ? "text" : "password"}
+            type={passwordShown2 ? "text" : "password"}
             placeholder="********"
-            {...register("password")} isInvalid={!!errors.password}/>
-          <i onClick={togglePasswordVisiblity}>{passwordShown ? eye : eye_slash}</i>
-          {errors.password?.message && (<Form.Control.Feedback type="invalid">{errors.password?.message}</Form.Control.Feedback>)}
+            {...UpdatePass.register("newpassword")} isInvalid={!!UpdatePass.formState.errors.newpassword}/>
+          <i onClick={togglePasswordVisiblity2}>{passwordShown2 ? eye : eye_slash}</i>
+          {UpdatePass.formState.touchedFields.newpassword && UpdatePass.formState.errors.newpassword  && (<Form.Control.Feedback type="invalid">{UpdatePass.formState.errors.newpassword.message}</Form.Control.Feedback>)}
         </Form.Group>
 
                 <div className={form.submit_btn} style={{marginTop: '25px'}}>
-                    <Button type="submit" className='special_btn'> <span> Save </span> </Button>     
+                    <Button type="submit" disabled={!UpdatePass.formState.isValid} className={`special_btn ${!UpdatePass.formState.isValid ? 'not_valid_btn' : ''}`}> <span> Save </span> </Button>     
                     </div>
 
             </Form>
@@ -413,3 +564,4 @@ const onSubmit = (data) =>{
   );
 }
 
+export default withAuth(Profile);

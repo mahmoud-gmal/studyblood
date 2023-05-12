@@ -15,8 +15,8 @@ import * as Yup from "yup";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
-    .required("Email is required.")
-    .email("Invalid email."),
+    .required("E-mail is required.")
+    .email("E-mail field must be a valid email."),
 });
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -36,8 +36,9 @@ const Forget = () => {
   const { forgetPass } = useAuth();
 
 
-  const { register,reset, handleSubmit, formState: { errors }} = useForm({
-    resolver: yupResolver(validationSchema)
+  const { register,reset, handleSubmit, formState: { errors, isValid, touchedFields }} = useForm({
+    resolver: yupResolver(validationSchema),
+    mode: 'onTouched', // enable "on touch" validation
   });
 
 
@@ -81,12 +82,12 @@ const Forget = () => {
             placeholder="Hralryad@Gmail.Com" 
             {...register("email")} isInvalid={!!errors.email}/>
 
-{errors.email?.message && (<Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>)}
+{touchedFields.email && errors.email &&  (<Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>)}
         </Form.Group>
 
 
                 <div className={styles.submit_btn} style={{marginTop: '25px'}}>
-                    <Button type="submit" className='special_btn'> <span> Send E-Mail </span> </Button>     
+                    <Button type="submit" disabled={!isValid} className={`special_btn ${!isValid ? 'not_valid_btn' : ''}`}> <span> Send E-Mail </span> </Button>     
                     </div>
 
             </Form>

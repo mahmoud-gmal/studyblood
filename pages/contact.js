@@ -30,8 +30,8 @@ const validationSchema = Yup.object().shape({
     .required("Name is required.")
     .min(3, "must be at least 3 characters."),
   email: Yup.string()
-    .required("Email is required.")
-    .email("Invalid email."),
+    .required("E-mail is required.")
+    .email("E-mail field must be a valid email."),
   phone: Yup.string()
     .required("Phone number is required.")
     .matches(phoneRegExp, 'Phone number is not valid'),
@@ -52,9 +52,10 @@ const Contact = () => {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isValid, touchedFields },
   } = useForm({
     resolver: yupResolver(validationSchema),
+    mode: 'onTouched', // enable "on touch" validation
   });
 
   const onSubmit = (values) => {
@@ -116,7 +117,7 @@ const Contact = () => {
                       type="text"
                       placeholder="Abdallah Hammad" 
                       {...register("name")} isInvalid={!!errors.name}/>
-                    {errors.name?.message && (<Form.Control.Feedback type="invalid">{errors.name?.message}</Form.Control.Feedback>)}
+                    {touchedFields.name && errors.name && (<Form.Control.Feedback type="invalid">{errors.name?.message}</Form.Control.Feedback>)}
                   </Form.Group>
 
                   <Form.Group controlId="emailID">
@@ -125,7 +126,7 @@ const Contact = () => {
                     type="email"
                     placeholder="Hralryad@Gmail.Com" 
                     {...register("email")} isInvalid={!!errors.email}/>
-                  {errors.email?.message && (<Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>)}
+                  { touchedFields.email && errors.email && (<Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>)}
                 </Form.Group>
 
                   <Form.Group controlId="mobileID">
@@ -134,7 +135,7 @@ const Contact = () => {
                     type="tel"
                     placeholder="54 1234567" 
                     {...register("phone")} isInvalid={!!errors.phone}/>
-                  {errors.phone?.message && (<Form.Control.Feedback type="invalid">{errors.phone?.message}</Form.Control.Feedback>)}
+                  {touchedFields.phone && errors.phone && (<Form.Control.Feedback type="invalid">{errors.phone?.message}</Form.Control.Feedback>)}
                 </Form.Group>
 
                 <Form.Group controlId="meesageID">
@@ -145,11 +146,11 @@ const Contact = () => {
                     rows={6}
                     placeholder="Your Message" 
                     {...register("message")} isInvalid={!!errors.message}/>
-                  {errors.message?.message && (<Form.Control.Feedback type="invalid">{errors.message?.message}</Form.Control.Feedback>)}
+                  {touchedFields.message && errors.message && (<Form.Control.Feedback type="invalid">{errors.message?.message}</Form.Control.Feedback>)}
                 </Form.Group>
 
                     <div className={styles.submit_btn} style={{marginTop: '25px'}}>
-                    <Button type="submit" className='special_btn'> <span> Send </span> </Button>     
+                    <Button type="submit" disabled={!isValid} className={`special_btn ${!isValid ? 'not_valid_btn' : ''}`}> <span> Send </span> </Button>     
                     </div>
 
                     </Form>

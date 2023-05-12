@@ -15,8 +15,8 @@ import * as Yup from "yup";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
-    .required("Email is required.")
-    .email("Invalid email."),
+    .required("E-mail is required.")
+    .email("E-mail field must be a valid email."),
   password: Yup.string()
     .required(".Password is required")
     .min(8, 'Password is too short - must be at least 8 characters long.')
@@ -39,8 +39,9 @@ const Login = () => {
 
   const { login } = useAuth();
 
-  const { register,handleSubmit, formState: { errors }} = useForm({
-    resolver: yupResolver(validationSchema)
+  const { register,handleSubmit, formState: { errors, isValid, touchedFields }} = useForm({
+    resolver: yupResolver(validationSchema),
+    mode: 'onTouched', // enable "on touch" validation
   });
 
 
@@ -82,7 +83,7 @@ const Login = () => {
             placeholder="Hralryad@Gmail.Com" 
             {...register("email")} isInvalid={!!errors.email}/>
 
-{errors.email?.message && (<Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>)}
+{  touchedFields.email && errors.email && (<Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>)}
         </Form.Group>
 
 
@@ -93,7 +94,7 @@ const Login = () => {
             placeholder="********"
             {...register("password")} isInvalid={!!errors.password}/>
           <i onClick={togglePasswordVisiblity}>{passwordShown ? eye : eye_slash}</i>
-          {errors.password?.message && (<Form.Control.Feedback type="invalid">{errors.password?.message}</Form.Control.Feedback>)}
+          {touchedFields.password && errors.password && (<Form.Control.Feedback type="invalid">{errors.password?.message}</Form.Control.Feedback>)}
         </Form.Group>
 
 
@@ -107,7 +108,7 @@ const Login = () => {
       </Form.Group>
 
                 <div className={styles.submit_btn} style={{marginTop: '25px'}}>
-                    <Button type="submit" className='special_btn'> <span> Log In </span> </Button>     
+                    <Button type="submit" disabled={!isValid} className={`special_btn ${!isValid ? 'not_valid_btn' : ''}`}> <span> Log In </span> </Button>     
                     </div>
 
             </Form>

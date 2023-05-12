@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import LoginPage from "../../../pages/login";
 import { useAuth } from "./../../context/AuthContext";
 import Header2 from "../layout/Header-2";
+import Login from "../../../pages/login";
 
 
 const withAuth = Component => {
@@ -28,8 +28,8 @@ const withAuth = Component => {
         if (!token && !localToken) {
           return (
             <>
-            <Header2 />
-            <LoginPage />
+            {/* <Header2 /> */}
+            <Login />
             </>
 
             

@@ -21,13 +21,13 @@ const validationSchema = Yup.object().shape({
     .required("Name is required.")
     .min(3, "must be at least 3 characters."),
   email: Yup.string()
-    .required("Email is required.")
-    .email("Invalid email."),
+    .required("E-mail is required.")
+    .email("E-mail field must be a valid email."),
   phone: Yup.string()
     .required("Phone number is required.")
     .matches(phoneRegExp, 'Phone number is not valid'),  
   password: Yup.string()
-    .required(".Password is required")
+    .required("Password is required.")
     .min(8, 'Password is too short - must be at least 8 characters long.')
     .matches(/[a-zA-Z]/, 'Password can only contain Latin characters.'),
 });
@@ -49,8 +49,9 @@ const Signup = () => {
   const { signup } = useAuth();
 
 
-  const { register,handleSubmit, formState: { errors }} = useForm({
-    resolver: yupResolver(validationSchema)
+  const { register,handleSubmit, formState: { errors, isValid, touchedFields   }} = useForm({
+    resolver: yupResolver(validationSchema),
+    mode: 'onTouched', // enable "on touch" validation
   });
 
 
@@ -98,7 +99,7 @@ const Signup = () => {
                       type="text"
                       placeholder="Type Name" 
                       {...register("name")} isInvalid={!!errors.name}/>
-                    {errors.name?.message && (<Form.Control.Feedback type="invalid">{errors.name?.message}</Form.Control.Feedback>)}
+                    {touchedFields.name && errors.name && (<Form.Control.Feedback type="invalid">{errors.name?.message}</Form.Control.Feedback>)}
                   </Form.Group>
                   
                 <Form.Group controlId="emailID">
@@ -108,7 +109,7 @@ const Signup = () => {
                     placeholder="Hralryad@Gmail.Com" 
                     {...register("email")} isInvalid={!!errors.email}/>
 
-                    {errors.email?.message && (<Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>)}
+                    {touchedFields.email && errors.email && (<Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>)}
                 </Form.Group>
 
                 <Form.Group controlId="mobileID">
@@ -117,7 +118,7 @@ const Signup = () => {
                     type="tel"
                     placeholder="54 1234567" 
                     {...register("phone")} isInvalid={!!errors.phone}/>
-                  {errors.phone?.message && (<Form.Control.Feedback type="invalid">{errors.phone?.message}</Form.Control.Feedback>)}
+                  {touchedFields.phone && errors.phone && (<Form.Control.Feedback type="invalid">{errors.phone?.message}</Form.Control.Feedback>)}
                 </Form.Group>
 
               <Form.Group className="password_wrap"  controlId="passID">
@@ -127,11 +128,11 @@ const Signup = () => {
                   placeholder="********"
                   {...register("password")} isInvalid={!!errors.password}/>
                 <i onClick={togglePasswordVisiblity}>{passwordShown ? eye : eye_slash}</i>
-                {errors.password?.message && (<Form.Control.Feedback type="invalid">{errors.password?.message}</Form.Control.Feedback>)}
+                {touchedFields.password &&  errors.password && (<Form.Control.Feedback type="invalid">{errors.password?.message}</Form.Control.Feedback>)}
               </Form.Group>
 
                 <div className={styles.submit_btn} style={{marginTop: '25px'}}>
-                    <Button type="submit" className='special_btn'> <span> Sign Up </span> </Button>     
+                    <Button type="submit" disabled={!isValid} className={`special_btn ${!isValid ? 'not_valid_btn' : ''}`}> <span> Sign Up </span> </Button>     
                 </div>
 
             </Form>
