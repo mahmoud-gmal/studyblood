@@ -151,6 +151,22 @@ p {
   background: #fff;
 }
 
+.btn_arrow{
+  padding: 6px 16px;
+  color: #FFF;
+  border-radius: 5px;
+  font: normal normal normal 16px/28px Calibri_Regular;
+  transition: all .4s linear;
+  display: flex;
+  align-items: center;
+  -webkit-margin-start: 20px;
+  margin-inline-start: 20px;
+  -webkit-margin-end: 20px;
+  margin-inline-end: 20px;
+  border: none;
+  cursor: pointer;
+  background: #FF4D00 0% 0% no-repeat padding-box;
+}
 
 .special_heading{
   font: normal normal bold 48px/59px Calibri_Regular;

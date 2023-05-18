@@ -124,6 +124,7 @@ const [localToken, setLocalToken] = useState(null);
 useEffect(() => {
   // const localToken = typeof window !== "undefined" ? localStorage.getItem('token') : null;
   setLocalToken(localStorage.getItem('token'))
+  
 }, [localToken, token])
 
 
