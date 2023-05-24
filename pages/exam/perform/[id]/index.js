@@ -44,7 +44,6 @@ const { token } = useAuth();
 const [loading, setLoading] = useState(true);
 const [questions, setQuestions] = useState([]);
 const [currentQue, setCurrentQue] = useState([]);
-const [answer, setAnswer] = useState([]);
 const [activeItem, setActiveItem] = useState(null);
 
 
@@ -240,8 +239,6 @@ return axios(url, {
           data: JSON.stringify(formData)
       })
       .then((response) => {
-        console.log(response.data.data.question.answers[0]);
-        setAnswer(response.data.data.question);
         setQuestions(response.data.data.score.questions);
         setCurrentQue(response.data);
 
@@ -295,7 +292,8 @@ const onSubmitAddNote = async (values) => {
                 </div>
                 <Form onSubmit={SubmitAnswer.handleSubmit(onSubmitSubmitAnswer)} className={styles.choices}>
 
-                {currentQue?.data?.question?.answers &&
+
+                {currentQue?.data?.is_answered == false &&
                currentQue?.data?.question?.answers.map((item, i) => (
                     <Form.Group className={`mb-3 `} controlId={item.id}  key={item.id} >
                         <Form.Check  type="radio" value={item.id} name="choice" className={` ${styles.form_check}`}  label={item.content} 
@@ -304,9 +302,17 @@ const onSubmitAddNote = async (values) => {
                     </Form.Group>
                    ))}
 
-                    <div className={styles.submit_btn} style={{marginTop: '25px'}}>
+{currentQue?.data?.is_answered == false &&
+                    (<div className={styles.submit_btn} style={{marginTop: '25px'}}>
                     <Button type="submit" disabled={!SubmitAnswer.formState.isValid} className={`special_btn ${!SubmitAnswer.formState.isValid ? 'not_valid_btn' : ''}`} > <span> Submit  </span> </Button>     
-                    </div>
+                    </div>)}
+
+                    {currentQue?.data?.is_answered == true &&
+                    (<>
+                    
+                    <p dangerouslySetInnerHTML={{ __html: currentQue?.data?.question?.hint }}></p>
+                    </>
+                    )}
 
 
                 </Form>
