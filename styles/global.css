@@ -45,6 +45,11 @@ body {
 /*============== Typography ============*/
 
 @font-face {
+  font-family: "Calibri_light";
+  src: url("/fonts/Calibri_Light.ttf");
+}
+
+@font-face {
   font-family: "Calibri_Regular";
   src: url("/fonts/Calibri_Regular.ttf");
 }
@@ -220,7 +225,16 @@ p {
 
 /*========================== form global ======================*/
 
-.not_valid_btn {
+/* input checkbox / radio css */
+
+
+
+
+
+
+
+
+.not_valid_btn, .not_foun {
   opacity: .5;
   cursor: not-allowed !important;
 }

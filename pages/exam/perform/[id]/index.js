@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import { useAuth } from "./../../../../src/context/AuthContext";
 // import { server } from '../../../config';
 import React, { useState , useEffect, useRef } from "react";
 
@@ -10,47 +11,261 @@ import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 // import placholder from './../../../public/assets/images/placeholder.png';
 import { Editor } from '@tinymce/tinymce-react';
 
+import axios from "axios";
 
-
-
-// import "react-intl-tel-input/dist/main.css";
-// import PhoneInput from "react-intl-tel-input";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowCircleLeft, faArrowCircleRight, faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
+//hook-form & yup
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+
+const schema1 = Yup.object().shape({
+  choice: Yup.string()
+    .required("Field is required.")
+    // .min(3, "must be at least 3 characters."),
+});
+
+const schema2 = Yup.object().shape({
+  editor: Yup.string()
+    .required("Field is required.")
+});
+
+
+
 const Perform = () => {
 
-
-
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const handlePhoneNumberChange = (value) => {
-      setPhoneNumber(value);
-    };
+// context
+const { token } = useAuth();
 
 
 
+const [loading, setLoading] = useState(true);
+const [questions, setQuestions] = useState([]);
+const [currentQue, setCurrentQue] = useState([]);
+const [answer, setAnswer] = useState([]);
+const [activeItem, setActiveItem] = useState(null);
 
 
-    function handleEditorChange(content, editor) {
-        console.log('Content was updated:', content);
-      }
-
-    const router = useRouter()
-    const { id } = router.query;
+const handleItemClick = (itemId) => {
+  setActiveItem(itemId);
+};
 
 
+// Adding  class to a parent element when a checkbox input is checked
+const [isChecked, setIsChecked] = useState(false);
+function handleCheckboxChange(event) {
+  setIsChecked(event.target.checked);
+}
+const parentClassName = isChecked ? "parent--checked" : "parent";
+
+
+
+
+
+  function handleEditorChange(content, editor) {
+      // console.log('Content was updated:', content);
+    }
+
+
+// Getting Param Id
+const router = useRouter()
+const { id } = router.query;
 // const { asPath } = useRouter();
 // console.log(`http://localhost:3000${asPath}`)
+// console.log(id); // '/Performs/123'
 
 
-  console.log(id); // '/Performs/123'
 
-// console.log(slug)
-// if(!Perform){
-//     return(
-//         <h2>NOT FOUND !</h2>
-//     )
-// }
+
+
+useEffect(() => {
+
+// Gettting All Questions
+    axios.get(
+      `${process.env.NEXT_PUBLIC_API_URI}/exam/perform/${id}/`,
+      {headers: {
+              "Content-type": "Application/json",
+              "Authorization": `Bearer ${token ? token : localStorage.getItem('token')}`,
+              }   
+          }
+    )
+    .then((response) => {
+        // console.log(response.data.data.score.questions);
+        setQuestions(response.data.data.score.questions);
+        
+        setLoading(false);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+
+// que question
+    axios.get(
+      `${process.env.NEXT_PUBLIC_API_URI}/exam/perform/${id}/`,
+      {headers: {
+              "Content-type": "Application/json",
+              "Authorization": `Bearer ${token ? token : localStorage.getItem('token')}`,
+              }   
+          }
+    )
+    .then((response) => {
+        // console.log(response.data);
+        setCurrentQue(response.data);
+        setActiveItem(response.data.data.question.id);
+        // setLoading(false);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+
+
+
+  }, [id])
+
+
+
+// Navigate between questions by question id
+function quesGetById (quesId){
+  axios.get(
+    `${process.env.NEXT_PUBLIC_API_URI}/exam/perform/${id}/${quesId}`,
+    {headers: {
+            "Content-type": "Application/json",
+            "Authorization": `Bearer ${token ? token : localStorage.getItem('token')}`,
+            }   
+        }
+  )
+  .then((response) => {
+      // console.log(response.data);
+      setCurrentQue(response.data);
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+
+}
+
+
+// Displaying Next Question
+function nextQue(nextId){
+  // console.log(nextId);
+  if(nextId){
+
+    axios.get(
+      `${process.env.NEXT_PUBLIC_API_URI}/exam/perform/${id}/${nextId}`,
+      {headers: {
+              "Content-type": "Application/json",
+              "Authorization": `Bearer ${token ? token : localStorage.getItem('token')}`,
+              }   
+          }
+    )
+    .then((response) => {
+        // console.log(response.data);
+        setCurrentQue(response.data);
+        setActiveItem(nextId);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+
+  }
+
+
+}
+
+// Displaying Prev Question
+function prevQue(prevId){
+  // console.log(prevId);
+  if(prevId){
+    axios.get(
+      `${process.env.NEXT_PUBLIC_API_URI}/exam/perform/${id}/${prevId}`,
+      {headers: {
+              "Content-type": "Application/json",
+              "Authorization": `Bearer ${token ? token : localStorage.getItem('token')}`,
+              }   
+          }
+    )
+    .then((response) => {
+        // console.log(response.data);
+        setCurrentQue(response.data);
+        setActiveItem(prevId);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }
+
+}
+
+
+
+const SubmitAnswer = useForm({
+  resolver: yupResolver(schema1),
+  mode: 'onTouched', // enable "on touch" validation
+  // defaultValues,
+  // defaultValues: { input1: '', input2: '' },
+});
+
+
+const AddNote = useForm({
+  resolver: yupResolver(schema2),
+  mode: 'onTouched', // enable "on touch" validation
+  // defaultValues: { input1: '', input2: '' },
+});
+
+
+// Submitting Answer
+const onSubmitSubmitAnswer = async (values) => {
+
+  const formData = {
+    exam_id: id,
+    question_id: currentQue.data?.question.id,
+    user_answer_id: values.choice,
+  }
+// console.log(formData);
+
+let url = `${process.env.NEXT_PUBLIC_API_URI}/exam/answer`;
+return axios(url, {
+          method: "post",
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem('token')}`,
+           },
+          data: JSON.stringify(formData)
+      })
+      .then((response) => {
+        console.log(response.data.data.question.answers[0]);
+        setAnswer(response.data.data.question);
+        setQuestions(response.data.data.score.questions);
+        setCurrentQue(response.data);
+
+      })
+      .catch(error => 
+        // toast.error(`${error.response.data.message}`, {})
+        console.log(error)
+         );
+
+
+};
+
+
+
+const onSubmitAddNote = async (values) => {
+  const formData = {
+    current_password: values.password,
+    new_password: values.newpassword,
+  }
+
+};
+
+
+
 
 
   return (
@@ -65,46 +280,43 @@ const Perform = () => {
 <div className={`page_content ${styles.about}`}>
 
     <Container>
-
-
           <Row>
             <Col md={7}> 
             <div className='ques_wrapper'>
                 <div className={styles.header_ques}>
-                    <Button className={`btn_arrow ${styles.btn_prev}`}>  <FontAwesomeIcon style={{width:'12px', marginRight: '7px'}} icon={faArrowLeft} />  Previous</Button>
-                     <h2> Question 1 of 30 </h2>
-                    <Button className={`btn_arrow ${styles.btn_prev}`}>Next <FontAwesomeIcon style={{width:'12px', marginLeft: '7px'}} icon={faArrowRight} /></Button>
+                    <Button className={`btn_arrow ${styles.btn_prev} ${currentQue?.data?.previous_question_id ? 'active_foun' : 'not_foun'}`} onClick={()=> prevQue(currentQue?.data?.previous_question_id)}>  <FontAwesomeIcon style={{width:'12px', marginRight: '7px'}} icon={faArrowLeft} />  Previous</Button>
+                     <h2> {currentQue.message} </h2>
+                    <Button className={`btn_arrow ${styles.btn_prev} ${currentQue?.data?.next_question_id ? 'active_foun' : 'not_foun'}`} onClick={()=> nextQue(currentQue.data.next_question_id)}>Next <FontAwesomeIcon style={{width:'12px', marginLeft: '7px'}} icon={faArrowRight} /></Button>
                 </div>
              <div className='ques_block'>
               <div className={styles.form_sec_first}>
                 <div className={styles.que_txt}>
-                a 62-year-old male is currently admitted to the hospital for anemia due to bleeding. the patient was recently found to have cholecystitis. he was taken for a cholecystectomy. on pod#1, the patient developed worsening right-sided purpura near his abdomen. is hemoglobin was drawn and it was found to be 6.2 g/dl, which was done from a preoperative level of 12 g/dl. imaging is performed and he was found to have a large retroperitoneal bleed. he was surgically explored and the bleeding vessel that was causing the bleeding was fixed. hematology is consulted as the patient needs several prbc transfusions but the patient carries a history of iga deficiency. how should the prbc be modified to ensure that he receives a safe transfusion?
+                 {currentQue.data?.question.content}
                 </div>
-                <Form className={styles.choices}>
-                    <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                        <Form.Check  className={styles.form_check} type="checkbox" label="A. No specific intervention needed. IgA deficiency poses no risk for the patient to receive pRBC transfusions" />
+                <Form onSubmit={SubmitAnswer.handleSubmit(onSubmitSubmitAnswer)} className={styles.choices}>
+
+                {currentQue?.data?.question?.answers &&
+               currentQue?.data?.question?.answers.map((item, i) => (
+                    <Form.Group className={`mb-3 `} controlId={item.id}  key={item.id} >
+                        <Form.Check  type="radio" value={item.id} name="choice" className={` ${styles.form_check}`}  label={item.content} 
+                              {...SubmitAnswer.register("choice")} isInvalid={!!SubmitAnswer.formState.errors.choice}/>
+                              {SubmitAnswer.formState.touchedFields.choice && SubmitAnswer.formState.errors.choice && (<Form.Control.Feedback type="invalid">{SubmitAnswer.formState.errors.choice.message}</Form.Control.Feedback>)}
                     </Form.Group>
-                    <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                        <Form.Check  className={styles.form_check}type="checkbox" label="B. No specific intervention needed. IgA deficiency poses no risk for the patient to receive pRBC transfusions" />
-                    </Form.Group>
-                    <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                        <Form.Check  className={styles.form_check} type="checkbox" label="C. No specific intervention needed. IgA deficiency poses no risk for the patient to receive pRBC transfusions" />
-                    </Form.Group>
-                    <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                        <Form.Check className={styles.form_check} type="checkbox" label="D. No specific intervention needed. IgA deficiency poses no risk for the patient to receive pRBC transfusions" />
-                    </Form.Group>
+                   ))}
 
                     <div className={styles.submit_btn} style={{marginTop: '25px'}}>
-                    <Button type="submit" className='special_btn' > <span> Submit  </span> </Button>     
+                    <Button type="submit" disabled={!SubmitAnswer.formState.isValid} className={`special_btn ${!SubmitAnswer.formState.isValid ? 'not_valid_btn' : ''}`} > <span> Submit  </span> </Button>     
                     </div>
+
+
                 </Form>
                 </div>
 
 
-                <Form className='notes'>
-                <Editor
+                <Form onSubmit={AddNote.handleSubmit(onSubmitAddNote)}  className='notes'>
+                <Editor 
                     apiKey="bkyjvt0r5eg3ztub7famuj50yuilhm33coavubjesarybvvc"
-                    initialValue="<p>This is the initial content.</p>"
+                    // initialValue="<p>This is the initial content.</p>"
                     init={{
                         height: 500,
                         menubar: true,
@@ -119,10 +331,12 @@ const Perform = () => {
                         alignleft aligncenter alignright | \
                         bullist numlist outdent indent | help'
                     }}
-                    onEditorChange={handleEditorChange}
-                    />
+                    onEditorChange={(content) => {
+                    AddNote.register("editor")
+                    }}/>
+                    
                        <div className={styles.submit_btn} style={{marginTop: '25px'}}>
-                    <Button type="submit" className='special_btn' > <span> Add Notes  </span> </Button>     
+                    <Button type="submit" disabled={!AddNote.formState.isValid} className={`special_btn ${!AddNote.formState.isValid ? 'not_valid_btn' : ''}`} > <span> Add Notes  </span> </Button>     
                     </div>
                 </Form>
 
@@ -146,11 +360,7 @@ const Perform = () => {
                   <h5>Reference Ranges</h5>
               </div>
                   <div className={styles.ref_items}>
-                    <div className={styles.item}>
-                        <h4>Haemoglobin</h4>
-                        <p>Men: 135-180 g/L </p>
-                        <p>Women: 115-160 g/L</p>
-                    </div>
+                    <div className={styles.item} dangerouslySetInnerHTML={{ __html: currentQue.data?.question.links ? currentQue.data?.question.links : "<p>Not Found</p>"}}></div>
                   </div>
             </div>
             </Col>
@@ -166,25 +376,26 @@ const Perform = () => {
                     />
                 
                 <h5>Score</h5>
+                <h5 className={styles.score_total}>{currentQue?.data?.score.percentage } %</h5>
             </div>
             <table className={styles.score_table}>
             <tbody>
-              <tr>
-                <td className={`${styles.nav_table} ${styles.active}`}>1</td>
-                <td> <div className={styles.true}></div></td>
+
+              {loading && (<tr><td>loading......</td></tr>)}
+                  {questions &&
+                questions.map((item, i) => (
+              <tr key={i} onClick={() => handleItemClick(item.id)}>
+                <td className={`${styles.nav_table} ${activeItem === item.id ? styles.active : ''}`} onClick={() => quesGetById(item.id)}>{i + 1}</td>
+                <td>
+                  {item.is_correct === 1 ?  (<><div className={styles.true}></div></>) : item.is_correct === 0 ? ( <><div className={styles.false}>X</div></>) : 
+                  ( <><div className={styles.dashed}></div></>)
+                  }
+                  </td>
               </tr>
-              <tr>
-                <td className={styles.nav_table}>2</td>
-                <td><div className={styles.false}>X</div></td>
-              </tr>
-              <tr>
-                <td className={styles.nav_table}>3</td>
-                <td> <div className={styles.true}></div></td>
-              </tr>
-              <tr>
-                <td className={styles.nav_table}>4</td>
-                <td><div className={styles.false}>X</div></td>
-              </tr>
+              ))}
+
+
+
               </tbody>
             </table>
 
@@ -202,32 +413,7 @@ const Perform = () => {
   )
 }
 
-// export const getStaticProps = async (context) => {
-//   const res = await fetch(`https://safwa-tech.com/wp-json/wp/v2/Perform/${context.params.id}`)
 
-//   const Perform = await res.json()
-
-//   return {
-//     props: {
-//       Perform,
-//       revalidate : 1  //In seconds
-//     },
-//   }
-// }
-
-// export const getStaticPaths = async () => {
-//   const res = await fetch('https://safwa-tech.com/wp-json/wp/v2/Perform')
-
-//   const Performs = await res.json()
-//   const paths = Performs.map(Perform => ({ params: { id: Perform?.id.toString() } }));
-//   // const paths = Performs.map(Perform => ({ params: { id: '344' } }));
-
-
-//   return {
-//     paths,
-//     fallback: true,
-//   }
-// }
 
 
 
