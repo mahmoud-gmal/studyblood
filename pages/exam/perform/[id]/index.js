@@ -302,14 +302,24 @@ const onSubmitAddNote = async (values) => {
                     </Form.Group>
                    ))}
 
-{currentQue?.data?.is_answered == false &&
+        {currentQue?.data?.is_answered == false &&
                     (<div className={styles.submit_btn} style={{marginTop: '25px'}}>
                     <Button type="submit" disabled={!SubmitAnswer.formState.isValid} className={`special_btn ${!SubmitAnswer.formState.isValid ? 'not_valid_btn' : ''}`} > <span> Submit  </span> </Button>     
                     </div>)}
 
                     {currentQue?.data?.is_answered == true &&
                     (<>
-                    
+                    <uL className={styles.answers}>
+                    {
+               currentQue?.data?.question?.answers.map((item, i) => (
+                      <li key={i} className={`
+                      ${ item.is_correct && item.is_chosen ? styles.right_selected : ''} 
+                      ${!item.is_correct && item.is_chosen ? styles.wrong : ''}
+                      ${item.is_correct ? styles.right : ''}
+                      `}
+                      > <span>{item.content}</span> <span className={styles.percent}>{item.people_choice_percentage}</span> </li>
+                      ))}
+                    </uL>
                     <p dangerouslySetInnerHTML={{ __html: currentQue?.data?.question?.hint }}></p>
                     </>
                     )}

@@ -189,3 +189,75 @@ color: #000000;
         top: 0;
         background: #ddd;
       }
+
+      /* answer */
+
+
+
+
+      .answers{
+        margin-bottom: 30px;
+        margin-top: 30px;
+      }
+
+      .answers li{
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 14px;
+        padding: 10px 17px 10px 17px;
+        background: #FFFFFF 0% 0% no-repeat padding-box;
+        /* border: 1px solid #DDDDDD; */
+        border-radius: 5px;
+        font-size: 16px;
+        font-family: "Calibri_Regular";
+        color: #000000;
+    }
+    .answers li::before{
+      position: absolute;
+      content: "";
+      width: 7px;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      background: #DDDDDD 0% 0% no-repeat padding-box;
+      border-radius: 5px 0px 0px 5px;
+    }
+      
+
+
+    .right_selected{
+      background: #BBFFB6;
+      /* color: #FFF !important; */
+    }
+
+    .right_selected{background: #BBFFB6 !important;}
+    .right_selected::before{
+      background: green !important;
+    }
+
+
+
+    .wrong{
+      background: #FF7F7F;
+    }
+
+    .wrong{background: #ff7f7f !important;}
+    .wrong::before{
+      background: red !important;
+    }
+
+
+
+
+    .percent{
+      font-weight: bold;
+    }
+
+
+    .choices tbody,.choices td,.choices tfoot,.choices th,.choices thead, .choicestr {
+      border-color: inherit;
+      border-style: solid;
+      border-width: 0
+  }
+  
