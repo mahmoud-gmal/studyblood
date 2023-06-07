@@ -93,7 +93,7 @@ color: #343434;
 padding: 16px 0;
 }
 .topics p{
-    margin-bottom: 34px;
+    /* margin-bottom: 34px; */
     font: normal normal 300 16px/26px Calibri_Regular;
     color: #343434;
 }

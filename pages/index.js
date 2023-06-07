@@ -200,9 +200,9 @@ const topicsData = topics?.data;
                         <div className={styles.box_txt}>
                         <h3>{item?.name}</h3>
                         <p> {item?.description} </p>
-                        <div className="btns_wrapper">
+                        {/* <div className="btns_wrapper">
                           <Link href="/"><a className="special_btn"><span> Take A Test </span> </a></Link>
-                        </div>
+                        </div> */}
                         </div>
                       </div>
                     </Col>

@@ -372,7 +372,7 @@ const onSubmitUpdatePass = async (values) => {
           <td>{item.topic_name}</td>
           <td>{item.details}</td>
           <td>{item.status}</td>
-          <td><Link href="/"><a className={`table_btn ${item.operation != "Review" ? "continue" : ""}`}><span> {item.operation} </span></a></Link> </td>
+          <td><Link href={`/exam/perform/${item.id}`}><a className={`table_btn ${item.operation != "Review" ? "continue" : ""}`}><span> {item.operation} </span></a></Link> </td>
         </tr>
         ))}
 
@@ -478,7 +478,7 @@ const onSubmitUpdatePass = async (values) => {
 
 
                 <div className={form.submit_btn} style={{marginTop: '25px'}}>
-                    <Button type="submit" disabled={!EditAccount.formState.isValid} className={`special_btn ${!EditAccount.formState.isValid ? 'not_valid_btn' : ''}`}> <span> Save </span> </Button>     
+                    <Button type="submit" disabled={!EditAccount.formState.isValid} className={`btn_form special_btn ${!EditAccount.formState.isValid ? 'not_valid_btn' : ''}`}> <span> Save </span> </Button>     
                     </div>
 
             </Form>
@@ -528,7 +528,7 @@ const onSubmitUpdatePass = async (values) => {
         </Form.Group>
 
                 <div className={form.submit_btn} style={{marginTop: '25px'}}>
-                    <Button type="submit" disabled={!UpdatePass.formState.isValid} className={`special_btn ${!UpdatePass.formState.isValid ? 'not_valid_btn' : ''}`}> <span> Save </span> </Button>     
+                    <Button type="submit" disabled={!UpdatePass.formState.isValid} className={`btn_form special_btn ${!UpdatePass.formState.isValid ? 'not_valid_btn' : ''}`}> <span> Save </span> </Button>     
                     </div>
 
             </Form>

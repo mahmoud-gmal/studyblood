@@ -16,12 +16,12 @@
 
 .que_txt {
     background: #FFFFFF 0% 0% no-repeat padding-box;
-border: 1px solid #DDDDDD;
-border-radius: 5px;
+    border: 1px solid #DDDDDD;
+    border-radius: 5px;
     padding: 17px;
     font: normal normal 300 16px/28px Calibri_light;
-color: #000000;
-text-transform: capitalize;
+    color: #000000;
+    text-transform: capitalize;
     margin-bottom:15px
 }
 
@@ -30,6 +30,9 @@ text-transform: capitalize;
     color: #000000;
     text-transform: capitalize;
     margin-inline-start: 10px;
+    /*  */
+    width: 100%;
+    cursor: pointer;
 }
 .choices input{
     accent-color: #C9C9C9;
@@ -236,7 +239,9 @@ color: #000000;
       background: green !important;
     }
 
-
+    .right::before{
+      background: green !important;
+    }
 
     .wrong{
       background: #FF7F7F;
@@ -254,10 +259,114 @@ color: #000000;
       font-weight: bold;
     }
 
-
-    .choices tbody,.choices td,.choices tfoot,.choices th,.choices thead, .choicestr {
+    
+    .hint_wrapp tbody,.hint_wrapp td,.hint_wrapp tfoot,.hint_wrapp th,.hint_wrapp thead, .hint_wrapp tr {
       border-color: inherit;
       border-style: solid;
       border-width: 0
   }
+
+  .hint_wrapp table{
+    padding: 20px 14px;
+    border: 2px solid #ddd!important;
+    margin-bottom: 40px;
+  }
+
+  .hint_wrapp table td{border: 0}
+  .hint_wrapp table p{
+    font-family: 'Calibri_light';
+    text-transform: none;
+    margin-bottom: 7px;
+  }
+
+
+
+  .ans_items {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 42px;
+    margin-bottom: -4px;
+    font-family: 'Calibri_Bold';
+  }
+  .ans_items  .left_side{display: flex;align-items: center;}
+  .ans_items  .right_side{
+color: #FF7400;
+  }
+
   
+  .wrong_sign{
+    color:rgb(255, 77, 0)
+  }
+
+
+  .ended{
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+
+
+  /* checkmark */
+
+
+
+  .form_check{position: relative;}
+
+
+  /*  after  */
+ .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid #ff4d00;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+
+
+
+input:checked + label .red{
+  background: #ff4d00;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+input:checked + label .content{
+  color: #FFF;
+  position: relative;
+  z-index: 9;
+}
+
+input:checked + label .checkmark{
+  background-color: #FFF;
+}
+
+
+
+input:checked + label .checkmark:after {
+  display: block;
+}
+
+/* checkmark span */
+  .checkmark{
+    position: absolute;
+    z-index: 3;
+    top: 4px;
+    left: 11px;
+    height: 22px;
+    width: 22px;
+    margin-top: 5px;
+    border-radius: 5px;
+    background-color: #c9c9c9;
+  }
+
+ 

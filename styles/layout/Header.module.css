@@ -89,10 +89,13 @@
 }
 
 .btns .btn_log:not(.active):hover{
-    color: #FFF;
-    background: transparent linear-gradient(249deg, #FF7400 0%, #FF4D00 100%) 0% 0% no-repeat padding-box;
-    border: 1px solid transparent;
+    box-shadow: inset 0 -4.25em 0 0 #fff;
+    border: 1px solid #ddd;
+    color: #ff4d00;
 
 } 
 
 
+/* .btn_trans{
+
+} */

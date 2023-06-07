@@ -13,8 +13,15 @@ import { Editor } from '@tinymce/tinymce-react';
 
 import axios from "axios";
 
+
+import { toast } from "react-toastify";
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowCircleLeft, faArrowCircleRight, faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { faArrowCircleLeft, faArrowCircleRight, faArrowLeft, faArrowRight, faBookBookmark, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+
+
+
+
 
 //hook-form & yup
 import { useForm } from "react-hook-form";
@@ -28,9 +35,46 @@ const schema1 = Yup.object().shape({
 });
 
 const schema2 = Yup.object().shape({
-  editor: Yup.string()
+  content: Yup.string()
     .required("Field is required.")
 });
+
+
+
+
+
+//conditionally redirect the user based on the response.
+
+// export async function getServerSideProps(context) {
+  
+//   const  id  = context.query.id || '';
+
+
+
+
+//   // Fetch data from API
+//   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URI}/exam/status/${id}/`);
+
+//   const data = await response.json();
+
+//   // Check the API response and determine the redirect URL
+//   let redirectUrl = "";
+
+//   if (data.data.is_ended === 1) {
+//     redirectUrl = '/';
+//   } 
+
+// return {
+//     redirect: {
+//       destination: redirectUrl,
+//       permanent: false, // Set it to true if the redirect is permanent
+//     },
+// };
+// }
+
+
+
+
 
 
 
@@ -39,6 +83,7 @@ const Perform = () => {
 // context
 const { token } = useAuth();
 
+const [examStatus, setExamStatus] = useState();
 
 
 const [loading, setLoading] = useState(true);
@@ -52,34 +97,56 @@ const handleItemClick = (itemId) => {
 };
 
 
-// Adding  class to a parent element when a checkbox input is checked
-const [isChecked, setIsChecked] = useState(false);
-function handleCheckboxChange(event) {
-  setIsChecked(event.target.checked);
-}
-const parentClassName = isChecked ? "parent--checked" : "parent";
+// // Adding  class to a parent element when a checkbox input is checked
+// const [isChecked, setIsChecked] = useState(false);
+// function handleCheckboxChange(event) {
+//   setIsChecked(event.target.checked);
+//   // console.log('jjjjjjjjjjjjj');
+// }
+// const parentClassName = isChecked ? styles.parent_checked : "";
 
 
 
 
 
-  function handleEditorChange(content, editor) {
-      // console.log('Content was updated:', content);
-    }
 
 
 // Getting Param Id
 const router = useRouter()
 const { id } = router.query;
-// const { asPath } = useRouter();
-// console.log(`http://localhost:3000${asPath}`)
-// console.log(id); // '/Performs/123'
+
 
 
 
 
 
 useEffect(() => {
+
+// if id is defined
+if(id){
+
+
+// Check Exam Status 
+axios.get( 
+  `${process.env.NEXT_PUBLIC_API_URI}/exam/status/${id}/`,
+  {headers: {
+          "Content-type": "Application/json",
+          "Authorization": `Bearer ${token ? token : localStorage.getItem('token')}`,
+          }   
+      }
+)
+.then((response) => {
+    // console.log(response.data.data.is_ended);
+      setExamStatus(response.data.data.is_ended)
+    // setQuestions(response.data.data.score.questions);
+    // setLoading(false);
+  },
+  (error) => {
+    console.log(error);
+  }
+);
+
+
 
 // Gettting All Questions
     axios.get(
@@ -93,12 +160,18 @@ useEffect(() => {
     .then((response) => {
         // console.log(response.data.data.score.questions);
         setQuestions(response.data.data.score.questions);
-        
         setLoading(false);
-      },
-      (error) => {
+      }
+    ).catch(error => {
+      if (error.response.data && error.response.data.status === 403) {
+        console.log('error');
+        // Redirect to the "Not Found" page
+        router.push('/not-found'); 
+      } else {
+        // Handle other errors
         console.log(error);
       }
+    }
     );
 
 // que question
@@ -121,7 +194,7 @@ useEffect(() => {
       }
     );
 
-
+    }
 
   }, [id])
 
@@ -255,15 +328,66 @@ return axios(url, {
 
 const onSubmitAddNote = async (values) => {
   const formData = {
-    current_password: values.password,
-    new_password: values.newpassword,
+    exam_id: id,
+    note: values.content,
+    question_id: currentQue.data?.question.id,
   }
-
+  // console.log(formData);
+  let url = `${process.env.NEXT_PUBLIC_API_URI}/exam/note`;
+  return axios(url, {
+            method: "post",
+            headers: { 
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${localStorage.getItem('token')}`,
+             },
+            data: JSON.stringify(formData)
+        })
+        .then((response) => {
+          // console.log(response.data);
+          // AddNote.setValue('content', '');
+          AddNote.reset();
+          toast.success(`تم الارسال بنجاح`, {});
+  
+        })
+        .catch(error => 
+          toast.error(`${error.response.data.message}`, {})
+          // console.log(error);
+           );
 };
 
 
 
 
+// Handling Ending Exam
+const handleEndExam = () => {
+
+
+  const formData = {
+    exam_id: id,
+  }
+// console.log(formData);
+
+let url = `${process.env.NEXT_PUBLIC_API_URI}/exam/end`;
+return axios(url, {
+          method: "post",
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem('token')}`,
+           },
+          data: JSON.stringify(formData)
+      })
+      .then((response) => {
+        console.log(response.data);
+        // setQuestions(response.data.data.score.questions);
+        // setCurrentQue(response.data);
+
+      })
+      .catch(error => 
+        // toast.error(`${error.response.data.message}`, {})
+        console.log(error)
+         );
+
+} 
 
   return (
     <>
@@ -292,19 +416,51 @@ const onSubmitAddNote = async (values) => {
                 </div>
                 <Form onSubmit={SubmitAnswer.handleSubmit(onSubmitSubmitAnswer)} className={styles.choices}>
 
+                {currentQue?.data?.is_answered == true &&
+                    (<>
+                    <div className={styles.ans_items}>
+
+                    {currentQue?.data?.is_correct == 1 ? 
+                    (<span className={styles.left_side}><FontAwesomeIcon style={{width:'18px', marginRight: '4px', color: 'green'}} icon={faCheck} /> Correct Answer</span>)
+                      
+                    : 
+                    
+                    (<span className={` ${styles.left_side} ${styles.wrong_sign}`}><FontAwesomeIcon style={{width:'18px', marginRight: '4px', color:'rgb(255, 77, 0)'}} icon={faTimes} /> Wrong Answer</span>)
+                    }
+
+                      <span className={styles.right_side}>Previous Solutions</span>
+                    </div>
+                    </>
+                    )}
+
 
                 {currentQue?.data?.is_answered == false &&
                currentQue?.data?.question?.answers.map((item, i) => (
-                    <Form.Group className={`mb-3 `} controlId={item.id}  key={item.id} >
-                        <Form.Check  type="radio" value={item.id} name="choice" className={` ${styles.form_check}`}  label={item.content} 
-                              {...SubmitAnswer.register("choice")} isInvalid={!!SubmitAnswer.formState.errors.choice}/>
+                    <Form.Group className={`mb-3 ${examStatus == 1 ? styles.ended : ''}`} controlId={item.id}  key={item.id} >
+                        <Form.Check  type="radio"  value={item.id} name="choice" className={` ${styles.form_check} `}  
+                        // label={item.content} 
+                        label={
+                          <>
+                           <span className={styles.checkmark}></span>
+                           <span className={styles.content}>{item.content}  </span>
+                           <span className={styles.red}></span>
+                          </>
+                        }
+                              {...SubmitAnswer.register("choice")} isInvalid={!!SubmitAnswer.formState.errors.choice}
+                              />
                               {SubmitAnswer.formState.touchedFields.choice && SubmitAnswer.formState.errors.choice && (<Form.Control.Feedback type="invalid">{SubmitAnswer.formState.errors.choice.message}</Form.Control.Feedback>)}
                     </Form.Group>
                    ))}
 
-        {currentQue?.data?.is_answered == false &&
+        {currentQue?.data?.is_answered == false && examStatus == 0 &&
                     (<div className={styles.submit_btn} style={{marginTop: '25px'}}>
-                    <Button type="submit" disabled={!SubmitAnswer.formState.isValid} className={`special_btn ${!SubmitAnswer.formState.isValid ? 'not_valid_btn' : ''}`} > <span> Submit  </span> </Button>     
+                    <Button type="submit" disabled={!SubmitAnswer.formState.isValid} className={`btn_form special_btn ${!SubmitAnswer.formState.isValid ? 'not_valid_btn' : ''}`} > <span> Submit  </span> </Button>     
+                    
+                    {!currentQue?.data?.next_question_id && 
+                    (<Button type="button" style={{float: 'right'}} className={`btn_form special_btn `} onClick={()=> handleEndExam(currentQue.data.question.id)}> <span> End Exam  </span> </Button>) 
+                    }
+
+
                     </div>)}
 
                     {currentQue?.data?.is_answered == true &&
@@ -320,40 +476,36 @@ const onSubmitAddNote = async (values) => {
                       > <span>{item.content}</span> <span className={styles.percent}>{item.people_choice_percentage}</span> </li>
                       ))}
                     </uL>
-                    <p dangerouslySetInnerHTML={{ __html: currentQue?.data?.question?.hint }}></p>
+                    
                     </>
                     )}
 
 
                 </Form>
+                   
+                </div>
+                <div className={styles.hint_wrapp}>
+
+                <p dangerouslySetInnerHTML={{ __html: currentQue?.data?.question?.hint }}></p>
                 </div>
 
 
-                <Form onSubmit={AddNote.handleSubmit(onSubmitAddNote)}  className='notes'>
-                <Editor 
-                    apiKey="bkyjvt0r5eg3ztub7famuj50yuilhm33coavubjesarybvvc"
-                    // initialValue="<p>This is the initial content.</p>"
-                    init={{
-                        height: 500,
-                        menubar: true,
-                        plugins: [
-                        'advlist autolink lists link image',
-                        'charmap print preview anchor help',
-                        'searchreplace visualblocks code',
-                        'insertdatetime media table paste wordcount'
-                        ],
-                        toolbar:
-                        'undo redo | formatselect | bold italic | \
-                        alignleft aligncenter alignright | \
-                        bullist numlist outdent indent | help'
-                    }}
-                    onEditorChange={(content) => {
-                    AddNote.register("editor")
-                    }}/>
-                    
+                <Form onSubmit={AddNote.handleSubmit(onSubmitAddNote)}  className={`${examStatus == 1 ? styles.ended : ''}`}>
+                <Editor
+                apiKey="bkyjvt0r5eg3ztub7famuj50yuilhm33coavubjesarybvvc"
+                onEditorChange={(content) => AddNote.setValue('content', content)}
+                value={''}
+                />
+
+                {AddNote.formState.errors.content && <span>{AddNote.formState.errors.content.message}</span>}
+
+
+                    {examStatus == 0 && (
                        <div className={styles.submit_btn} style={{marginTop: '25px'}}>
-                    <Button type="submit" disabled={!AddNote.formState.isValid} className={`special_btn ${!AddNote.formState.isValid ? 'not_valid_btn' : ''}`} > <span> Add Notes  </span> </Button>     
+                    <Button type="submit" className={`btn_form special_btn `} > <span> Add Notes  </span> </Button>     
                     </div>
+
+                    )}
                 </Form>
 
 

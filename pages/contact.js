@@ -150,7 +150,7 @@ const Contact = () => {
                 </Form.Group>
 
                     <div className={styles.submit_btn} style={{marginTop: '25px'}}>
-                    <Button type="submit" disabled={!isValid} className={`special_btn ${!isValid ? 'not_valid_btn' : ''}`}> <span> Send </span> </Button>     
+                    <Button type="submit" disabled={!isValid} className={`btn_form special_btn ${!isValid ? 'not_valid_btn' : ''}`}> <span> Send </span> </Button>     
                     </div>
 
                     </Form>

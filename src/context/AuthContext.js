@@ -47,7 +47,7 @@ const signup = (formData) => {
           toast.success( `Account has been created successfully, Hello ${name}!`,{})
           router.push('/')
         })
-        .catch((error) => toast.error(`${error.message}`, {}));
+        .catch((error) => toast.error(`${error.response.data.message}`, {}));
         
     
 };
@@ -101,6 +101,7 @@ const login = (formData) => {
             // token
             localStorage.removeItem( 'token' );
             setToken(null);
+            // setLocalToken(null);
             // success message
             toast.success(`Successfully logged out`, {});        
 
@@ -191,7 +192,7 @@ const updatePass = (formData) => {
           console.log(response.data.status);
           // router.push('/')
         })
-        .catch((error) => toast.error(`${error}`, {}));
+        .catch((error) => toast.error(`${error.response.data.message}`, {}));
     
 };
 

@@ -190,7 +190,7 @@ useEffect(() => {
                     </a>
                   </Link>
                   <Link href="/">
-                    <a onClick={handleLogout} className={`special_btn ${styles.btn_log}`}>
+                    <a onClick={handleLogout} className={`special_btn ${styles.btn_log} ${styles.btn_trans}`}>
                       <span>Log Out</span>
                     </a>
                   </Link></>) 
@@ -202,7 +202,7 @@ useEffect(() => {
                   </Link>
                   
                   <Link href="/login">
-                    <a className={`special_btn ${styles.btn_log}`}>
+                    <a className={`special_btn ${styles.btn_log} ${styles.btn_trans}`}>
                       <span> Log In</span>
                     </a>
                   </Link></>)}

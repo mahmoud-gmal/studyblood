@@ -108,7 +108,7 @@ const Login = () => {
       </Form.Group>
 
                 <div className={styles.submit_btn} style={{marginTop: '25px'}}>
-                    <Button type="submit" disabled={!isValid} className={`special_btn ${!isValid ? 'not_valid_btn' : ''}`}> <span> Log In </span> </Button>     
+                    <Button type="submit" disabled={!isValid} className={`btn_form special_btn ${!isValid ? 'not_valid_btn' : ''}`}> <span> Log In </span> </Button>     
                     </div>
 
             </Form>
@@ -128,48 +128,3 @@ const Login = () => {
 export default Login;
 
 
-{/* <div className="row justify-content-center">
-<div className="col-md-7">
-  <div className="contact-inner">
-    <div className="contact-form">
-      <h3>Login </h3>
-      <form onSubmit={submitHandler}>
-        <FormGroup controlId='emailID'>
-          <label>Username</label>
-          <input type="text" name="username" className="form-control" ref={usernameRef} required/>
-        </FormGroup>
-        <div className="form-group">
-          <label>Password</label>
-          <input type="password" name="password" className="form-control" ref={passwordRef} autoComplete="on" required/>
-        </div>
-        <div className="form-group">
-          <div className="row">
-              <div className="col-6">
-                  <label className="aiz-checkbox">
-                      <input type="checkbox" name="remember" />
-                      <span className="text-muted ml-2">Remember Me</span>
-                      <span className="aiz-square-check"></span>
-                  </label>
-              </div>
-              <div className="col-6 text-right">
-                  <Link href="/forget-password" className="text-muted">Forgot password?</Link>
-              </div>
-          </div>
-         </div>
-        <div className="form-group wrap-btn">
-          <button type="submit" className="btn btn-form" style={{minWidth: '100%',marginBottom: '18px'}}>
-            <span>Login</span>
-          </button>
-        </div>
-
-        <div className="form-group text-center">
-          <p className="text-muted" style={{fontSize:'16px'}}>Dont have an account?</p>
-          <Link href="/signup">Register Now</Link>
-        </div>
-
-      </form>
-    </div>
-  </div>
-</div>
-
-</div> */}
