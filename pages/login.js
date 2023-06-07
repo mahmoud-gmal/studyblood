@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "./../src/context/AuthContext";
 import Router from 'next/router'
 import Image from "next/image";
-import Link from "next/Link";
+import Link from "next/link";
 import Meta from "../src/components/Meta";
 import { toast } from "react-toastify";
 import { Button, Col, Container, Form, FormGroup } from 'react-bootstrap';

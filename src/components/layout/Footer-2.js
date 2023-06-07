@@ -1,4 +1,4 @@
-import Link from "next/Link";
+import Link from "next/link";
 import Image from "next/image";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";

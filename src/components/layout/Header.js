@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/Link";
+import Link from "next/link";
 import { useAuth } from "./../../context/AuthContext";
 import React, {useEffect, useState, useRef} from "react";
 // import { useState, useEffect } from "react";

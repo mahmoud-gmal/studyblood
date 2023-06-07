@@ -1,6 +1,6 @@
 import Meta from "../src/components/Meta";
 import Image from "next/image";
-import Link from "next/Link";
+import Link from "next/link";
 
 // styles
 import styles from "./../styles/pages/contact.module.css";

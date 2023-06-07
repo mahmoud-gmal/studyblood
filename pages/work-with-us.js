@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import Image from "next/image";
-import Link from "next/Link";
+import Link from "next/link";
 import { useRouter } from "next/router";
 // custom components
 import Meta from "../src/components/Meta";
