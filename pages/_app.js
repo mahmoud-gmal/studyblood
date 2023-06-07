@@ -13,8 +13,8 @@ import '../styles/bootstrap-table.css'
 import Header from "../src/components/layout/Header";
 import Footer from "../src/components/layout/Footer";
 import { Suspense } from "react";
-import Header2 from "../src/components/layout/Header-2";
-import Footer2 from "../src/components/layout/Footer-2";
+import Header2 from "../src/components/layout/Header2";
+import Footer2 from "../src/components/layout/Footer2";
 
 
 // const { locale, locales, asPath } = useRouter();

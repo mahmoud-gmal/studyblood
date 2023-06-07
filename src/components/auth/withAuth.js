@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "./../../context/AuthContext";
-import Header2 from "../layout/Header-2";
+import Header2 from "../layout/Header2";
 import Login from "../../../pages/login";
 
 
