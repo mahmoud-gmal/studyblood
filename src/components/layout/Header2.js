@@ -7,7 +7,7 @@ import axios from "axios";
 
 
 import { Container, Row, Col } from "react-bootstrap";
-import styles from "./../../../styles/layout/Header2.module.css";
+import styles from "./../../../styles/layout/header2.module.css";
 
 
 
