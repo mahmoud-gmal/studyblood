@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Link from 'next/Link'
+import Link from 'next/link'
 import { Col, Container, Row } from 'react-bootstrap';
 // styles
 import styles from "./../styles/pages/404.module.css";
