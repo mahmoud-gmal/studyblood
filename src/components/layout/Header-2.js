@@ -2,17 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import React, {useEffect, useState, useRef} from "react";
 // import { useState, useEffect } from "react";
-// fontawesome
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {  faCaretDown, faBars, faTimes  } from "@fortawesome/free-solid-svg-icons";
 
-import { motion } from 'framer-motion';
-import { useMediaQuery } from 'react-responsive'
 import axios from "axios";
 
 
 import { Container, Row, Col } from "react-bootstrap";
-import styles from "./../../../styles/layout/Header-2.module.css";
+import styles from "./../../../styles/layout/Header2.module.css";
 
 
 
