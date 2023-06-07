@@ -13,7 +13,7 @@ import axios from "axios";
 
 
 import { Container, Row, Col } from "react-bootstrap";
-import styles from "./../../../styles/layout/Header.module.css";
+import styles from "./../../../styles/layout/header.module.css";
 
 
 
@@ -252,13 +252,14 @@ useEffect(() => {
                   </div>
                 {status && (
                   <motion.ul className={`d-flex flex-direction-column ${styles.mobile_list_nav}`} key={status} variants={variants} animate={'show'} initial="hide">
-                <div className={styles.logo_wraper}>
+                <div className={styles.logo_wraper} style={{padding: '20px'}}>
                 <Link href="/"><a className={styles.mobile_logo}>
                   <Image
                       alt="logo"
-                      src="/assets/Logo.png"
+                      src={logo ? logo : '/assets/logo.png'}
                       width="301"
                       height="88"
+                      
                       // layout="responsive"
                     />
                     </a>

@@ -33,7 +33,7 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 40%;
+    width: 50%;
     height: 100%;
     z-index: 999;
     overflow-y: auto;
@@ -99,3 +99,15 @@
 /* .btn_trans{
 
 } */
+
+/*------------ mobile ---------------*/
+@media (max-width: 1199.9px) {
+.mobile_list_nav {
+
+
+}
+}
+@media (max-width: 445px) {
+    .btns_mob { display: flex; flex-direction: column;}
+     .btns_mob a{margin-bottom: 9px}
+    }
