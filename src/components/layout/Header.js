@@ -104,12 +104,43 @@ const { token, logout, displayName } = useAuth();
 
 const {ref,isComponentVisible,setIsComponentVisible} = useComponentVisible(true);
 
+// const [localToken, setLocalToken] = useState(() => {
+//   if (typeof window !== "undefined") {
+//     // Code to initialize state on the client-side
+//     return localStorage.getItem('token');
+//   }
+//   // Fallback initial state value for server-side rendering
+//   return '';
+// });
+
+const [localToken, setLocalToken] = useState(null);
+
+useEffect(() => {
+  // Check if the value exists in localStorage
+  const storedValue = localStorage.getItem('token');
+
+  if (storedValue) {
+    setLocalToken(storedValue);
+  }
+}, []);
+
+
+
+
+
+
+
+
+
+
+
 
 // logout
 const handleLogout =  async (e) =>{  
   e.preventDefault()
   try {
     await logout();
+    setLocalToken(null);
     // router.push('/')
   } catch (error) {
     if(error){
@@ -120,12 +151,14 @@ const handleLogout =  async (e) =>{
 }
 
 // Token
-const [localToken, setLocalToken] = useState(null);
 useEffect(() => {
-  // const localToken = typeof window !== "undefined" ? localStorage.getItem('token') : null;
-  setLocalToken(localStorage.getItem('token'))
-  
 }, [localToken, token])
+
+
+
+
+
+
 
 
 
@@ -253,7 +286,7 @@ useEffect(() => {
                 {status && (
                   <motion.ul className={`d-flex flex-direction-column ${styles.mobile_list_nav}`} key={status} variants={variants} animate={'show'} initial="hide">
                 <div className={styles.logo_wraper} style={{padding: '20px'}}>
-                <Link href="/"><a className={styles.mobile_logo}>
+                <Link href="/"><a className={styles.mobile_logo} onClick={handleClick}>
                   <Image
                       alt="logo"
                       src={logo ? logo : '/assets/logo.png'}
@@ -268,43 +301,43 @@ useEffect(() => {
               </div>
 
               <li>
-                    <Link href="/"><a><Image alt=".."src="/assets/house.svg" width="22" height="22"
+                    <Link href="/"><a onClick={handleClick}><Image alt=".."src="/assets/house.svg" width="22" height="22"
                   // layout="responsive"
                     />
                       {/* <FontAwesomeIcon style={{width: '20px', color: '#000'}} icon={faHouse} /> */}
                       </a></Link>
                   </li>
                   <li>
-                    <Link href="/about">About us</Link>
+                    <Link href="/about"><a onClick={handleClick}>About us</a></Link>
                   </li>
                   <li>
-                    <Link href="/work-with-us">Work with us</Link>
+                    <Link href="/work-with-us"><a onClick={handleClick}>Work with us</a></Link>
                   </li>
                   <li>
-                    <Link href="/contact">Contact us</Link>
+                    <Link href="/contact"><a onClick={handleClick}>Contact us</a></Link>
                   </li>
                 <div className={`${styles.btns} ${styles.btns_mob}`}>
 
                 {token || localToken ? 
                   (<><Link href="/profile">
-                    <a className={`special_btn ${styles.btn_log} ${styles.active}`}>
+                    <a className={`special_btn ${styles.btn_log} ${styles.active}`} onClick={handleClick}>
                       <span> My Profile</span>
                     </a>
                   </Link>
-                  <Link href="/">
+                  <Link href="/" >
                     <a onClick={handleLogout} className={`special_btn ${styles.btn_log}`}>
                       <span>Log Out</span>
                     </a>
                   </Link></>) 
 
                   : ( <><Link href="/signup">
-                    <a className={`special_btn ${styles.btn_log} ${styles.active}`}>
+                    <a className={`special_btn ${styles.btn_log} ${styles.active}`} onClick={handleClick}>
                       <span> Sign Up </span>
                     </a>
                   </Link>
                   
                   <Link href="/login">
-                    <a className={`special_btn ${styles.btn_log}`}>
+                    <a className={`special_btn ${styles.btn_log}`} onClick={handleClick}>
                       <span> Log In</span>
                     </a>
                   </Link></>)}

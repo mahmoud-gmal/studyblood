@@ -18,7 +18,6 @@ export const AuthProvider = ({ children }) => {
   const [displayName, setDisplayName] = useState("");
   const [customerror, seterror] = useState("");
   const [token, setToken] = useState(null);
-  const [localToken, setLocalToken] = useState(null);
   const [loading, setLoading] = useState(true);
 //   const history = useHistory();
 
@@ -73,7 +72,8 @@ const login = (formData) => {
               // localStorage.setItem( 'student', JSON.stringify(student) );
               // }
               setDisplayName(name); 
-              setToken(token); 
+              setToken(token);
+
               toast.success( `You are logged in successfully Hello ${name}!`,{})
               router.push('/')
       
@@ -101,7 +101,6 @@ const login = (formData) => {
             // token
             localStorage.removeItem( 'token' );
             setToken(null);
-            // setLocalToken(null);
             // success message
             toast.success(`Successfully logged out`, {});        
 
@@ -241,7 +240,8 @@ const updatePass = (formData) => {
     updatePass,
     tokenChanged,
     displayName,
-    token
+    token,
+
   };
 
   return (

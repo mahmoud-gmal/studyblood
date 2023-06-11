@@ -534,6 +534,8 @@ return axios(url, {
             </Col>
             <Col md={2}> 
             <div className={styles.ref_heading}>
+              <div style={{display:'inherit'}}>
+
                  <Image
                     alt="logo"
                     src="/assets/literature.svg"
@@ -544,6 +546,8 @@ return axios(url, {
                     />
                 
                 <h5>Score</h5>
+
+              </div>
                 <h5 className={styles.score_total}>{currentQue?.data?.score.percentage } %</h5>
             </div>
             <table className={styles.score_table}>

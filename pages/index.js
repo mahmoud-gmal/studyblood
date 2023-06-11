@@ -1,5 +1,6 @@
 // react core
-import React, { useEffect, useRef } from "react";
+import React, { useEffect,useState, useRef } from "react";
+
 import { useRouter } from "next/router";
 // nextjs components
 import Image from "next/image";
@@ -100,10 +101,11 @@ const topicsData = topics?.data;
 
 
 
+
   return (
     <>
       <Meta title="StudyBlood | Home" />
-      
+
       <main className="main-content">
 
         {/*================= ٍBanner ==========*/}
