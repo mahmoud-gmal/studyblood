@@ -35,7 +35,7 @@
     left: 0;
     width: 50%;
     height: 100%;
-    z-index: 999;
+    z-index: 44;
     overflow-y: auto;
     overflow-x: hidden;
 
@@ -92,7 +92,6 @@
     box-shadow: inset 0 -4.25em 0 0 #fff;
     border: 1px solid #ddd;
     color: #ff4d00;
-
 } 
 
 
@@ -101,13 +100,15 @@
 } */
 
 /*------------ mobile ---------------*/
-@media (max-width: 1199.9px) {
-.mobile_list_nav {
-
-
-}
-}
-@media (max-width: 445px) {
-    .btns_mob { display: flex; flex-direction: column;}
-     .btns_mob a{margin-bottom: 9px}
+@media only screen and (max-width: 1199.9px) and (min-width: 991.9px){
+    .main_navbar ul li a{
+        font: normal normal normal 17px/22px Calibri_Regular;
     }
+}
+
+
+@media (max-width: 445px) {
+.btns_mob { display: flex; flex-direction: column;}
+.btns_mob a{margin-bottom: 9px}
+
+ }
